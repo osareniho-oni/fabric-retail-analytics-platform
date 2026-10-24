@@ -1,0 +1,50 @@
+table MisconductCategory
+	lineageTag: 273fed87-44e8-5bff-8af4-c8c29ad5b53c
+	sourceLineageTag: [dim].[MisconductCategory]
+
+	column CategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 6f0e4fc7-7526-59dd-a565-a8270ce66af3
+		sourceLineageTag: CategoryKey
+		summarizeBy: none
+		sourceColumn: CategoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CategoryID
+		dataType: int64
+		formatString: 0
+		lineageTag: 33e3d4d3-f592-520c-b7c2-e1b0c8dc88b4
+		sourceLineageTag: CategoryID
+		summarizeBy: none
+		sourceColumn: CategoryID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Name'
+		dataType: string
+		lineageTag: 6272294c-4dea-5722-bc21-37fc3b6ba400
+		sourceLineageTag: CategoryName
+		summarizeBy: none
+		sourceColumn: CategoryName
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition MisconductCategory = entity
+		mode: directLake
+		source
+			entityName: MisconductCategory
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

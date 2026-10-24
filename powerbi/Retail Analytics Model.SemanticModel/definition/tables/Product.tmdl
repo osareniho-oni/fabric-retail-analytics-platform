@@ -1,0 +1,142 @@
+table Product
+	lineageTag: 80d4a31e-4942-50fd-9ae2-644e5bf36616
+	sourceLineageTag: [dim].[Product]
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: cd32da68-52ea-5eb0-88d7-aca720a2e99c
+		sourceLineageTag: ProductKey
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductID
+		dataType: int64
+		formatString: 0
+		lineageTag: 4907057d-e770-5394-893f-d5d9b430fc73
+		sourceLineageTag: ProductID
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Product Name'
+		dataType: string
+		lineageTag: 56b58b91-0b98-5ab4-bdd3-cd5a60dc0173
+		sourceLineageTag: ProductName
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Number'
+		dataType: string
+		lineageTag: 6fd04542-ddb6-5339-bba7-161601ae9810
+		sourceLineageTag: ProductNumber
+		summarizeBy: none
+		sourceColumn: ProductNumber
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Department
+		dataType: string
+		lineageTag: 467b56b3-879a-51d8-9200-1fc94b741e91
+		sourceLineageTag: Department
+		summarizeBy: none
+		sourceColumn: Department
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Unit Price'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 9fbce711-1bf8-54e8-b110-ffa3fc8495ed
+		sourceLineageTag: UnitPrice
+		summarizeBy: none
+		sourceColumn: UnitPrice
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column ValidFrom
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7df668ac-c299-5a8c-935d-870811bd5f04
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: be14a64d-5560-526e-a95e-066bf2eafe7c
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsCurrent
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 064333d8-a3c6-5737-8093-14def71f10a6
+		sourceLineageTag: IsCurrent
+		summarizeBy: none
+		sourceColumn: IsCurrent
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsRebranded
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 4de3ba5d-58eb-5167-9fd6-6b276554c3bc
+		sourceLineageTag: IsRebranded
+		summarizeBy: none
+		sourceColumn: IsRebranded
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Product = entity
+		mode: directLake
+		source
+			entityName: Product
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

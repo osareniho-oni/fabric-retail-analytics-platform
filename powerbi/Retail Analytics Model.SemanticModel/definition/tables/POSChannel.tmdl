@@ -1,0 +1,130 @@
+table POSChannel
+	lineageTag: e51d959e-5545-5ad6-8278-5aba022c77d2
+	sourceLineageTag: [dim].[POSChannel]
+
+	column ChannelKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 3c4b5240-d481-583a-a5b4-cac93af9c1c9
+		sourceLineageTag: ChannelKey
+		summarizeBy: none
+		sourceColumn: ChannelKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChannelID
+		dataType: int64
+		formatString: 0
+		lineageTag: 330cb044-7c10-576f-a044-0c2bcc3aa25f
+		sourceLineageTag: ChannelID
+		summarizeBy: none
+		sourceColumn: ChannelID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Channel Number'
+		dataType: string
+		lineageTag: 34840023-5d46-5766-bc3e-f9d3b3a5e026
+		sourceLineageTag: ChannelNumber
+		summarizeBy: none
+		sourceColumn: ChannelNumber
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Device Model'
+		dataType: string
+		lineageTag: 5a3f5a12-3242-5c43-ab9a-55f548c2b272
+		sourceLineageTag: DeviceModel
+		summarizeBy: none
+		sourceColumn: DeviceModel
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Serial Number'
+		dataType: string
+		lineageTag: f2188d3d-aa8b-5bf0-85ca-b46aced06c86
+		sourceLineageTag: SerialNumber
+		summarizeBy: none
+		sourceColumn: SerialNumber
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Installation Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a1ac3d77-9fa1-5909-8866-839f5ccf9e30
+		sourceLineageTag: InstallationDate
+		summarizeBy: none
+		sourceColumn: InstallationDate
+
+		changedProperty = IsHidden
+
+		changedProperty = DataType
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ValidFrom
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f331a63a-912e-5da0-a2b9-296ed35decf2
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7ae2033a-f1a5-5ff4-8b15-0949a978a770
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsCurrent
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 7212f29b-5b40-5c60-b811-acfa3350b6ed
+		sourceLineageTag: IsCurrent
+		summarizeBy: none
+		sourceColumn: IsCurrent
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition POSChannel = entity
+		mode: directLake
+		source
+			entityName: POSChannel
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

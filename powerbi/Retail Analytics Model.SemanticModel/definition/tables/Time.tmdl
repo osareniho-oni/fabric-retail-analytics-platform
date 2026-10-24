@@ -1,0 +1,65 @@
+table Time
+	lineageTag: e3926e09-0dfb-5d04-9cb1-6f8320a65cd6
+	sourceLineageTag: [dim].[Time]
+
+	column TimeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: d9c2cb1e-8e54-507d-8661-f98f89e73dc1
+		sourceLineageTag: TimeKey
+		summarizeBy: none
+		sourceColumn: TimeKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Time Hour'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6053d669-62ed-5bc6-be53-40ff6a1edba8
+		sourceLineageTag: TimeHour
+		summarizeBy: none
+		sourceColumn: TimeHour
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Day Period Of Day'
+		dataType: string
+		lineageTag: 8d94ecc1-fd5c-58ab-b06c-2145cf4ec69d
+		sourceLineageTag: DayPeriodOfDay
+		summarizeBy: none
+		sourceColumn: DayPeriodOfDay
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Time Status'
+		dataType: string
+		lineageTag: 5f6571d2-c4a5-5afc-9bca-a61152028bee
+		sourceLineageTag: TimeStatus
+		summarizeBy: none
+		sourceColumn: TimeStatus
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Time = entity
+		mode: directLake
+		source
+			entityName: Time
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+

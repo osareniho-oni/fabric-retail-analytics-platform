@@ -1,0 +1,48 @@
+table AbsentCategory
+	lineageTag: e3878310-ca5a-58b5-9ae8-a448b89185d3
+	sourceLineageTag: [dim].[AbsentCategory]
+
+	column CategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 62ed6525-84de-5317-8534-9e7931c0d9c9
+		sourceLineageTag: CategoryKey
+		summarizeBy: none
+		sourceColumn: CategoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CategoryID
+		dataType: int64
+		formatString: 0
+		lineageTag: b37d0281-bc63-5d31-b9d4-591ce98bd5a3
+		sourceLineageTag: CategoryID
+		summarizeBy: none
+		sourceColumn: CategoryID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Name'
+		dataType: string
+		lineageTag: 2ea3afaa-ec96-52ba-8af0-063b5f09b9ae
+		sourceLineageTag: CategoryName
+		summarizeBy: none
+		sourceColumn: CategoryName
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition AbsentCategory = entity
+		mode: directLake
+		source
+			entityName: AbsentCategory
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+

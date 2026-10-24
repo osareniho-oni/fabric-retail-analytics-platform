@@ -1,0 +1,202 @@
+table 'Time Intelligence'
+	lineageTag: 4d7df2f6-77d9-5cbe-ba0c-6e31d215186b
+
+	calculationGroup
+		precedence: 2
+
+		calculationItem Current = SELECTEDMEASURE()
+
+			formatStringDefinition = "$#,##0"
+
+		calculationItem 'PY (Previous Year)' = ```
+				
+				VAR _CurrentValue = SELECTEDMEASURE()
+				VAR _HasData = NOT ISBLANK(_CurrentValue)
+				VAR _ShiftedValue = 
+				CALCULATE(
+				    SELECTEDMEASURE(),
+				    SAMEPERIODLASTYEAR('Date'[Full Date]),
+				    // DATEADD( 'Date'[Full Date], -1, YEAR ),
+				    ALL( 'Date' )
+				)
+				RETURN
+				    IF(
+				        _HasData && NOT ISBLANK(_ShiftedValue),
+				        _ShiftedValue,
+				        BLANK()
+				    )
+				```
+
+			formatStringDefinition = "$#,##0"
+
+		calculationItem 'YoY Change' = ```
+				
+				 VAR _Current = SELECTEDMEASURE()
+				VAR _Previous = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Full Date]), ALL('Date'))
+				RETURN
+				    IF(
+				        NOT ISBLANK(_Current) && NOT ISBLANK(_Previous),
+				        _Current - _Previous,
+				        BLANK()
+				    )
+				
+				```
+
+			formatStringDefinition = "$#,##0"
+
+		calculationItem 'YoY Growth %' = ```
+				
+				VAR CurrentVal = SELECTEDMEASURE()
+				VAR PriorVal = 
+				    CALCULATE(
+				        SELECTEDMEASURE(),
+				        SAMEPERIODLASTYEAR('Date'[Full Date]),
+				        // DATEADD( 'Date'[Full Date], -1, YEAR ),
+				        ALL( 'Date' )
+				    )
+				VAR _IsFuturePeriod = ISBLANK([Net Revenue])    
+				RETURN
+				    
+				    IF(
+				        _IsFuturePeriod,
+				        BLANK(), -- Hides the entire row's calculations for future months cleanly
+				        IF(
+				            ISBLANK(PriorVal) || PriorVal = 0,
+				            BLANK(), // Safely hides the metric if no prior data exists
+				            DIVIDE(CurrentVal - PriorVal, PriorVal, BLANK())
+				        )
+				    )
+				```
+
+			formatStringDefinition = "0.##%"
+
+		calculationItem 'PQ (Previous Quarter)' = ```
+				
+				CALCULATE(
+				    SELECTEDMEASURE(),
+				    DATEADD( 'Date'[Full Date], -1, QUARTER ),
+				    ALL( 'Date' )
+				)
+				
+				```
+
+			formatStringDefinition = "$#,##0"
+
+		calculationItem 'QoQ Change' = ```
+				
+				VAR _Current = SELECTEDMEASURE()
+				VAR _Previous = CALCULATE(SELECTEDMEASURE(), DATEADD('Date'[Full Date], -1, QUARTER), ALL('Date'))
+				RETURN
+				    IF(
+				        NOT ISBLANK(_Current) && NOT ISBLANK(_Previous),
+				        _Current - _Previous,
+				        BLANK()
+				    )
+				
+				```
+
+			formatStringDefinition = ```
+					"$#,##0"
+					
+					
+					```
+
+		calculationItem 'QoQ Growth %' = ```
+				
+				VAR CurrentVal = SELECTEDMEASURE()
+				VAR PriorVal = 
+				    CALCULATE(
+				        SELECTEDMEASURE(),
+				        DATEADD( 'Date'[Full Date], -1, QUARTER ),
+				        ALL( 'Date' )
+				    )
+				VAR _IsFuturePeriod = ISBLANK([Net Revenue])    
+				RETURN
+				    IF(
+				        _IsFuturePeriod,
+				        BLANK(), -- Hides the entire row's calculations for future months cleanly
+				        IF(
+				            ISBLANK(PriorVal) || PriorVal = 0,
+				            BLANK(), // Safely hides the metric if no prior data exists
+				            DIVIDE(CurrentVal - PriorVal, PriorVal, BLANK())
+				        )
+				    )
+				```
+
+			formatStringDefinition = "0.##%"
+
+		calculationItem 'PM (Previous Month)' = ```
+				
+				CALCULATE(
+				    SELECTEDMEASURE(),
+				    DATEADD( 'Date'[Full Date], -1, MONTH ),
+				    ALL( 'Date' )
+				)
+				
+				```
+
+			formatStringDefinition = ```
+					"$#,##0"
+					
+					```
+
+		calculationItem 'MoM Change' = ```
+				
+				VAR _Current = SELECTEDMEASURE()
+				VAR _Previous = CALCULATE(SELECTEDMEASURE(), DATEADD('Date'[Full Date], -1, MONTH), ALL('Date'))
+				RETURN
+				    IF(
+				        NOT ISBLANK(_Current) && NOT ISBLANK(_Previous),
+				        _Current - _Previous,
+				        BLANK()
+				    )
+				
+				```
+
+			formatStringDefinition = "$#,##0"
+
+		calculationItem 'MoM Growth %' = ```
+				
+				VAR CurrentVal = SELECTEDMEASURE()
+				VAR PriorVal = 
+				    CALCULATE(
+				        SELECTEDMEASURE(),
+				        DATEADD( 'Date'[Full Date], -1, MONTH ),
+				        ALL( 'Date' )
+				    )
+				VAR _IsFuturePeriod = ISBLANK([Net Revenue])
+				RETURN
+				    IF(
+				        _IsFuturePeriod,
+				        BLANK(), -- Hides the entire row's calculations for future months cleanly
+				        IF(
+				            ISBLANK(PriorVal) || PriorVal = 0,
+				            BLANK(), // Safely hides the metric if no prior data exists
+				            DIVIDE(CurrentVal - PriorVal, PriorVal, BLANK())
+				        )
+				    )
+				```
+
+			formatStringDefinition = "0.##%"
+
+	column Period
+		dataType: string
+		lineageTag: 215fe4d3-5bc0-5c62-9c11-d552e80f2703
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		formatString: 0
+		lineageTag: 7f01fb19-b99b-5f58-9fac-986ee8f27dd0
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Time Intelligence' = calculationGroup
+		mode: import
+

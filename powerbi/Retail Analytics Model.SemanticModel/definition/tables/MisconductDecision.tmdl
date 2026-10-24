@@ -1,0 +1,50 @@
+table MisconductDecision
+	lineageTag: 0e5e4808-3d97-57f3-b95c-c1e3bb4e75f7
+	sourceLineageTag: [dim].[MisconductDecision]
+
+	column DecisionKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 31697aff-7254-5c01-b4ff-d8e93b95f26d
+		sourceLineageTag: DecisionKey
+		summarizeBy: none
+		sourceColumn: DecisionKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DecisionID
+		dataType: int64
+		formatString: 0
+		lineageTag: 82aecc16-364d-59b5-b038-afbe6d624ccb
+		sourceLineageTag: DecisionID
+		summarizeBy: none
+		sourceColumn: DecisionID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Decision Name'
+		dataType: string
+		lineageTag: 804d00b6-e516-5346-a003-152b89a17795
+		sourceLineageTag: DecisionName
+		summarizeBy: none
+		sourceColumn: DecisionName
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition MisconductDecision = entity
+		mode: directLake
+		source
+			entityName: MisconductDecision
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

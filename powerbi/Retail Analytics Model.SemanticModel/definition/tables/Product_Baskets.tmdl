@@ -1,0 +1,22 @@
+table Product_Baskets
+	lineageTag: 6126958b-6bf0-596a-9f0f-5a27904ce1bc
+
+	column Column
+		formatString: 0
+		lineageTag: 5187d1f1-ec69-578c-aafc-bdf5ba63ea70
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Column]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Product_Baskets = calculated
+		mode: import
+		source = Row("Column", BLANK())
+
+	annotation PBI_Id = 2f076486b185471e9af39b51ada0aba7
+
+	annotation b813f3b6-c046-582d-bc5c-9b944f5c1a48 = {"Expression":"\nSELECTCOLUMNS(\n    'Product',\n    \"ProductName\", Product[Product Name],\n    \"ProductKey\", Product[ProductKey]\n)\n"}
+
+	annotation 4dac909e-1944-5430-baca-3f932018c476 = We cannot commit this expression because it depends on Direct Lake or DirectQuery columns. Please configure the semantic model to use an explicit connection with granular access control to access this data source and retry.
+

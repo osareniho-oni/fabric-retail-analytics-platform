@@ -1,0 +1,34 @@
+table FinancialBridge
+	lineageTag: 7b932529-38ee-57e1-bbd8-57f04976ec25
+
+	column StepID
+		dataType: int64
+		formatString: 0
+		lineageTag: 3a1e556c-3b31-50f2-961b-1fb6fcab80d9
+		summarizeBy: count
+		sourceColumn: StepID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FinancialStage
+		dataType: string
+		lineageTag: 441116c2-fcd9-5d99-82a9-0e20b2a07109
+		summarizeBy: none
+		sourceColumn: FinancialStage
+		sortByColumn: StepID
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FinancialBridge = m
+		mode: import
+		source =
+				let
+				  Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlTSUTLUU/BLLVEISi1LzStNVYrViVYyAgob6Sk4+7sHg/nGQL6xnoJ7UX5xsUJAUX5aZolSbCwA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [StepID = _t, FinancialStage = _t]),
+				  #"Changed column type" = Table.TransformColumnTypes(Source, {{"StepID", Int64.Type}, {"FinancialStage", type text}})
+				in
+				  #"Changed column type"
+
+	annotation PBI_ResultType = Table
+

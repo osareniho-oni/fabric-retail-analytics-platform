@@ -1,0 +1,103 @@
+table Misconduct
+	lineageTag: a903edd7-ee18-5bc7-95a4-253cdf3a1422
+	sourceLineageTag: [fact].[Misconduct]
+
+	column MisconductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 5cb17343-2f42-5fee-bfbb-36be2d5f8abb
+		sourceLineageTag: MisconductKey
+		summarizeBy: none
+		sourceColumn: MisconductKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 853e2fe8-f1b7-5bc2-a6ff-5c1fb97ad364
+		sourceLineageTag: DateKey
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmployeeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 8326c437-aa37-551e-9f7c-5df544733772
+		sourceLineageTag: EmployeeKey
+		summarizeBy: none
+		sourceColumn: EmployeeKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 0476ea2d-c229-5340-9719-997a8752b246
+		sourceLineageTag: StoreKey
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MisconductCategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 0c4ac540-47f0-5aa9-9e18-4258c2343625
+		sourceLineageTag: MisconductCategoryKey
+		summarizeBy: none
+		sourceColumn: MisconductCategoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DecisionKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 946f27b3-3fdd-5719-a667-660054f994be
+		sourceLineageTag: DecisionKey
+		summarizeBy: none
+		sourceColumn: DecisionKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Incident Count'
+		dataType: int64
+		formatString: 0
+		lineageTag: 019a5298-dec9-56c4-83ce-cef641d3123c
+		sourceLineageTag: IncidentCount
+		summarizeBy: none
+		sourceColumn: IncidentCount
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	partition Misconduct = entity
+		mode: directLake
+		source
+			entityName: Misconduct
+			schemaName: fact
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

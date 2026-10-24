@@ -1,0 +1,16 @@
+flowchart TD
+    SQL[On-premises SQL Server] --> TC[Transaction ingestion]
+    SQL --> RC[Reference ingestion]
+    HR[HR CSV files] --> FC[HR CSV ingestion]
+    TC --> BT[Bronze Lakehouse Tables]
+    RC --> BT
+    FC --> BF[Bronze Lakehouse Files]
+    BT --> TN[Table staging notebook]
+    BF --> FN[HR staging notebook]
+    TN --> S[Silver staging tables]
+    FN --> S
+    S --> SP[T-SQL warehouse loading]
+    SP --> W[Gold Warehouse dimensions and facts]
+    D[Calendar dataflow] --> W
+    W --> M[Semantic model and DAX]
+    M --> P[Power BI reports]

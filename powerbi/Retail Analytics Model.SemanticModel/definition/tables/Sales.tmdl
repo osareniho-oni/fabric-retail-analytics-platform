@@ -1,0 +1,258 @@
+table Sales
+	lineageTag: 14ea978d-3de2-590f-a7ce-c7ea15646151
+	sourceLineageTag: [fact].[Sales]
+
+	column SalesKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 67b8a263-2349-5336-bc68-0b7f35582f84
+		sourceLineageTag: SalesKey
+		summarizeBy: none
+		sourceColumn: SalesKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column TransactionNumber
+		dataType: string
+		lineageTag: 2e596976-be78-5e5a-9807-68a165155b55
+		sourceLineageTag: TransactionNumber
+		summarizeBy: none
+		sourceColumn: TransactionNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TransactionDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 3fa1a055-fc4c-5bf2-8445-395869191609
+		sourceLineageTag: TransactionDateKey
+		summarizeBy: none
+		sourceColumn: TransactionDateKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column TransactionHourKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 9d12981c-7b14-51cc-a4c4-2274b8fab06e
+		sourceLineageTag: TransactionHourKey
+		summarizeBy: none
+		sourceColumn: TransactionHourKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: bc3f400c-5563-5ea9-bcdd-b28cfb6cb91b
+		sourceLineageTag: OrderDateKey
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column OrderHourKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f52a73e6-5782-5ed8-b4f6-5beec432da70
+		sourceLineageTag: OrderHourKey
+		summarizeBy: none
+		sourceColumn: OrderHourKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column DeliveryDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e44782fd-c559-5834-adb0-608ff56ed348
+		sourceLineageTag: DeliveryDateKey
+		summarizeBy: count
+		sourceColumn: DeliveryDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChannelKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b0e38c7b-71d1-543a-9b36-f497c8dababd
+		sourceLineageTag: ChannelKey
+		summarizeBy: none
+		sourceColumn: ChannelKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b768248c-ff4b-511d-921a-b330e6a865f6
+		sourceLineageTag: CustomerKey
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmployeeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f07e806c-2a49-5c76-94bf-54e63c7ac645
+		sourceLineageTag: EmployeeKey
+		summarizeBy: none
+		sourceColumn: EmployeeKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 26664080-97ee-5a9d-9a3f-7af84f7d5b90
+		sourceLineageTag: ProductKey
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 8c9abaf9-1ee8-5bae-81c0-155ad8866006
+		sourceLineageTag: StoreKey
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PromotionKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 6a190054-aa89-586a-a679-f1f18405c0cb
+		sourceLineageTag: PromotionKey
+		summarizeBy: none
+		sourceColumn: PromotionKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: d3ac24ae-54e0-5a51-b20e-80f888093b83
+		sourceLineageTag: Quantity
+		summarizeBy: none
+		sourceColumn: Quantity
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Tax Amount'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 2ee69e6d-0a65-5321-98da-43c5d438680a
+		sourceLineageTag: TaxAmount
+		summarizeBy: none
+		sourceColumn: TaxAmount
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Line Amount'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 224bbbe6-204d-50dd-9996-9447ec5bd7d9
+		sourceLineageTag: LineAmount
+		summarizeBy: none
+		sourceColumn: LineAmount
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Line discount amount'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 81a95cfa-57e9-59b9-9d07-594dcb734cbe
+		sourceLineageTag: Linediscountamount
+		summarizeBy: none
+		sourceColumn: Linediscountamount
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column TransactionID
+		dataType: int64
+		formatString: 0
+		lineageTag: 48cfa9ba-4dd2-57ff-be58-9a6d49c43df6
+		sourceLineageTag: TransactionID
+		summarizeBy: none
+		sourceColumn: TransactionID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	partition Sales = entity
+		mode: directLake
+		source
+			entityName: Sales
+			schemaName: fact
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

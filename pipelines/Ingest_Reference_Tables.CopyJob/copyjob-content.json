@@ -1,0 +1,1252 @@
+{
+  "properties": {
+    "jobMode": "Batch",
+    "source": {
+      "type": "SqlServerTable",
+      "connectionSettings": {
+        "type": "SqlServer",
+        "typeProperties": {
+          "database": "retail_demo_oltp"
+        },
+        "externalReferences": {
+          "connection": "5c1cb3d0-fc86-5c4c-b753-2ddda0730965"
+        }
+      }
+    },
+    "destination": {
+      "type": "LakehouseTable",
+      "connectionSettings": {
+        "type": "Lakehouse",
+        "typeProperties": {
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6",
+          "artifactId": "6d9ee20d-138b-59bd-b0aa-4f6c3b2df807",
+          "rootFolder": "Tables"
+        }
+      }
+    },
+    "policy": {
+      "timeout": "0.12:00:00",
+      "retry": 0
+    }
+  },
+  "activities": [
+    {
+      "id": "7d688fdd-8751-5e35-bf46-6e885e87022c",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "City"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "City"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "CityID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "CityID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "CityName",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "CityName",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "StateID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "StateID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bad377b8-f0a2-5676-a6a6-648cc27a887a",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Customer"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Customer"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "CustomerID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "CustomerID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "FirstName",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "FirstName",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "LastName",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "LastName",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "CustomerAddress",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "CustomerAddress",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "CityID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "CityID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "CreatedDate",
+                "type": "DateTime",
+                "physicalType": "date"
+              },
+              "destination": {
+                "name": "CreatedDate",
+                "physicalType": "date"
+              }
+            },
+            {
+              "source": {
+                "name": "ModifiedDate",
+                "type": "DateTime",
+                "physicalType": "date"
+              },
+              "destination": {
+                "name": "ModifiedDate",
+                "physicalType": "date"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "88fc1b31-edc3-5d80-aad4-ac6c654181f0",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Department"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Department"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "DepartmentID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "DepartmentID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "Department",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "Department",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "198bcc83-7bd9-5ef4-aab6-596c0c18ffd0",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Employee"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Employee"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "EmployeeID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "EmployeeID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "EmployeeNo",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "EmployeeNo",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "FirstName",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "FirstName",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "LastName",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "LastName",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "DoB",
+                "type": "DateTime",
+                "physicalType": "date"
+              },
+              "destination": {
+                "name": "DoB",
+                "physicalType": "date"
+              }
+            },
+            {
+              "source": {
+                "name": "MaritalStatus",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "MaritalStatus",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "13e2d506-9a3c-59c5-bd46-3f2bb6c371e0",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "MaritalStatus"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "MaritalStatus"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "MaritalStatusID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "MaritalStatusID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "MaritalStatus",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "MaritalStatus",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "33e79ede-3945-5b4e-b044-17468c60429c",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "POSChannel"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "POSChannel"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "ChannelID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ChannelID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ChannelNo",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "ChannelNo",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "DeviceModel",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "DeviceModel",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "SerialNo",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "SerialNo",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "InstallationDate",
+                "type": "DateTime",
+                "physicalType": "date"
+              },
+              "destination": {
+                "name": "InstallationDate",
+                "physicalType": "date"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "13612f08-7645-5010-9f30-1a34a27c5b42",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Product"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Product"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "ProductID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ProductID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "DepartmentID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "DepartmentID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "Product",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "Product",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "ProductNumber",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "ProductNumber",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "UnitPrice",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "UnitPrice",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ff24e819-999a-58e3-b3d5-32b53b9a0072",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Promotion"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Promotion"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "PromotionID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "PromotionID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "PromotionTypeID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "PromotionTypeID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "StartDate",
+                "type": "DateTime",
+                "physicalType": "date"
+              },
+              "destination": {
+                "name": "StartDate",
+                "physicalType": "date"
+              }
+            },
+            {
+              "source": {
+                "name": "EndDate",
+                "type": "DateTime",
+                "physicalType": "date"
+              },
+              "destination": {
+                "name": "EndDate",
+                "physicalType": "date"
+              }
+            },
+            {
+              "source": {
+                "name": "DiscountPercent",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "DiscountPercent",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "7b4d3685-2eb2-5d6f-88e6-57a39715d23c",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "PromotionType"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "PromotionType"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "PromotionTypeID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "PromotionTypeID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "Promotion",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "Promotion",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "f18989ab-3730-5581-b65a-b4c365479f5e",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "State"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "State"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "StateID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "StateID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "State",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "State",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "55ffd900-5079-5f89-a73a-12261e93f889",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Store"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Store"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "StoreID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "StoreID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "StateID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "StateID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "StoreName",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "StoreName",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "StreetAddress",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "StreetAddress",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "CityID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "CityID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ff123a6b-ede7-5f50-9b54-1b33c3494624",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Vendor"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Vendor"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "VendorID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "VendorID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "VendorNo",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "VendorNo",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "LastName",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "LastName",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "FirstName",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "FirstName",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "RegistrationNo",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "RegistrationNo",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "VendorAddress",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "VendorAddress",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "CityID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "CityID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "CreatedDate",
+                "type": "DateTime",
+                "physicalType": "date"
+              },
+              "destination": {
+                "name": "CreatedDate",
+                "physicalType": "date"
+              }
+            },
+            {
+              "source": {
+                "name": "ModifiedDate",
+                "type": "DateTime",
+                "physicalType": "date"
+              },
+              "destination": {
+                "name": "ModifiedDate",
+                "physicalType": "date"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    }
+  ]
+}

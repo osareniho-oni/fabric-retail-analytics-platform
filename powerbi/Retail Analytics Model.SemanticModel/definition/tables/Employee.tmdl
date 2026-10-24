@@ -1,0 +1,132 @@
+table Employee
+	lineageTag: 1f0384ce-d49b-52e4-943c-4983c0fa6ba2
+	sourceLineageTag: [dim].[Employee]
+
+	column EmployeeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 73ec143a-c9a2-5ede-baa9-24f8852af4ba
+		sourceLineageTag: EmployeeKey
+		summarizeBy: none
+		sourceColumn: EmployeeKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmployeeID
+		dataType: int64
+		formatString: 0
+		lineageTag: fda46203-80ac-5c4e-8c02-909248595efa
+		sourceLineageTag: EmployeeID
+		summarizeBy: none
+		sourceColumn: EmployeeID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Employee Number'
+		dataType: string
+		lineageTag: 4c36e061-afcc-51f2-8391-86517c41a165
+		sourceLineageTag: EmployeeNumber
+		summarizeBy: none
+		sourceColumn: EmployeeNumber
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Employee Name'
+		dataType: string
+		lineageTag: 387f6919-6e3d-5d55-9576-bd8a9b727b65
+		sourceLineageTag: EmployeeName
+		summarizeBy: none
+		sourceColumn: EmployeeName
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Date Of Birth'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8e5fb66c-325c-57f3-9f6f-fb5a49338e2f
+		sourceLineageTag: DateOfBirth
+		summarizeBy: none
+		sourceColumn: DateOfBirth
+
+		changedProperty = IsHidden
+
+		changedProperty = DataType
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Marital Status'
+		dataType: string
+		lineageTag: 23369e67-1284-57bf-af32-1ccebb90d8a9
+		sourceLineageTag: MaritalStatus
+		summarizeBy: none
+		sourceColumn: MaritalStatus
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidFrom
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 02968c8e-c7a8-5a28-80da-3fb8cc790695
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 08e7939c-7ab3-5cd1-87ae-83a086404604
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsCurrent
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: eac4adb7-50c8-51cf-a661-84279b3ea332
+		sourceLineageTag: IsCurrent
+		summarizeBy: none
+		sourceColumn: IsCurrent
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Employee = entity
+		mode: directLake
+		source
+			entityName: Employee
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

@@ -1,0 +1,1730 @@
+table _Measures
+	lineageTag: 96aac876-6309-5a38-b7f3-62ba611792dc
+
+	measure 'Daily Avg Units Sold' = AVERAGEX(VALUES('Date'[Full Date]), [Total Units Sold])
+		displayFolder: Sales
+		lineageTag: 7f9d2671-927b-5f0a-9050-e40c67de7a71
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Non-Promo Sales' =
+			
+			CALCULATE([Net Sales], Promotion[Promotion Name] = "No Discount")
+		displayFolder: Requirement 01 - Promotional Analysis
+		lineageTag: 7f61c04a-c901-595d-84b2-751c5178ffc3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Promo Sales' = CALCULATE([Net Sales], Promotion[Promotion Name] <> "No Discount")
+		displayFolder: Requirement 01 - Promotional Analysis
+		lineageTag: 65982296-faf6-5d49-a25d-7a0f2e645463
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Promo Sales Share %' = DIVIDE([Promo Sales], [Net Sales], 0)
+		displayFolder: Requirement 01 - Promotional Analysis
+		lineageTag: e2cb0c9e-5959-50cd-8e0f-3253445cb50c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Promo Units Sold' = CALCULATE([Total Units Sold], Promotion[Promotion Name] <> "No Discount")
+		displayFolder: Requirement 01 - Promotional Analysis
+		lineageTag: d86bb126-6e36-5ecc-a56c-e65be69efc75
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Promo Lift %' =
+			
+			DIVIDE([Promo Sales], [Non-Promo Sales], 0) - 1
+		displayFolder: Requirement 01 - Promotional Analysis
+		lineageTag: c9e1949c-eaf5-519c-a298-f4191139a5c8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Sales' = SUM(Sales[Line Amount])
+		displayFolder: Sales
+		lineageTag: 12106cd3-3544-5a15-bd56-7c4948347e4a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Sales' = [Gross Sales] - [Total Discounts]
+		displayFolder: Sales
+		lineageTag: 6082b8fb-e6f7-5917-9402-2e20fd911389
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Units Sold' = SUM(Sales[Quantity])
+		displayFolder: Sales
+		lineageTag: 53b5d066-e6b3-5d8c-874a-ddc8ebb54c52
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Discounts' = SUM(Sales[Line discount amount])
+		displayFolder: Requirement 01 - Promotional Analysis
+		lineageTag: a8ee44ea-abf8-5290-bce7-9e80eab630d6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Orders' = DISTINCTCOUNT(Sales[TransactionNumber])
+		displayFolder: Requirement 02 - Market Basket Analysis
+		lineageTag: 7df0f6e5-6140-5224-a6e3-868640fb871c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Basket Selected Orders' =
+			
+			// Calculates how many transactions contained the product selected in the basket slicer.
+			
+			VAR _SelectedBasketProducts = VALUES('Product_Basket'[ProductKey])
+			RETURN
+			CALCULATE(
+			    [Total Orders],
+			    REMOVEFILTERS('Product'),
+			    'Sales'[ProductKey] IN _SelectedBasketProducts
+			)
+		displayFolder: Requirement 02 - Market Basket Analysis
+		lineageTag: dbf1c8be-e804-5995-921a-71f548baac7c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Co-Purchased Orders' = ```
+			
+			// Evaluates how often products from the primary Product table appear in the same transaction (TransactionNumber) as the selected basket product.
+			
+			VAR _SelectedBasketProducts = VALUES('Product_Basket'[ProductKey])
+			VAR _TargetTransactions = 
+			    CALCULATETABLE(
+			        VALUES('Sales'[TransactionNumber]),
+			        REMOVEFILTERS('Product'),
+			        'Sales'[ProductKey] IN _SelectedBasketProducts
+			    )
+			RETURN
+			    CALCULATE(
+			        [Total Orders],
+			        'Sales'[TransactionNumber] IN _TargetTransactions
+			    )
+			```
+		displayFolder: Requirement 02 - Market Basket Analysis
+		lineageTag: bc56b789-6ff2-5186-b35f-5cba9ad1f968
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Attachment Rate %' =
+			
+			// The percentage of orders containing Product A that also contained Product B.
+			
+			DIVIDE([Co-Purchased Orders], [Basket Selected Orders], 0)
+		displayFolder: Requirement 02 - Market Basket Analysis
+		lineageTag: e6b55804-c277-5704-964b-b70688587654
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'POS Replacement Count' =
+			
+			CALCULATE(
+			    COUNTROWS('POSDeviceChange'),
+			    'POSDeviceChange'[ChangeType] = "Replacement"
+			)
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: f6f784b0-12b9-51ac-9110-f89fb33d830b
+
+	measure 'Active POS Devices' =
+			
+			DISTINCTCOUNT('POSDeviceChange'[POSDeviceChangeKey])
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: 31eeb318-6f86-5518-9d8a-eb416f7a48d6
+
+	measure 'POS Replacement Frequency' = ```
+			
+			DIVIDE(
+			    [POS Replacement Count],
+			    DISTINCTCOUNT(POSChannel[ChannelKey])
+			)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: bbced4c9-5d1e-5e94-b71e-aabc04fac815
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'POS Replacement Count by Date' = ```
+			
+			CALCULATE(
+			    [POS Replacement Count],
+			    ALLEXCEPT('Date', 'Date'[DateKey])
+			)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: a2983468-8b88-5fb2-93f1-2339c4e19293
+
+	measure 'POS Upgrade Count' = ```
+			
+			CALCULATE(
+			    COUNTROWS(POSDeviceChange),
+			    POSDeviceChange[ChangeType] = "Upgrade"
+			)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: b19aa90f-0a08-5be9-ad44-15bbe401c2ab
+
+	measure 'POS Upgrade Rate' = ```
+			
+			DIVIDE(
+			    [POS Upgrade Count],
+			    [POS Replacement Count] + [POS Upgrade Count]
+			)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: 8abb0ed7-f7f0-5ccf-85aa-bc37f9958f15
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'POS Device Change Count' = ```
+			
+			COUNTROWS(POSDeviceChange)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: a538d731-b0d1-57c2-987a-f120d465310e
+
+	measure 'POS Replacement Trend' = ```
+			
+			CALCULATE(
+			    [POS Replacement Count],
+			    ALLEXCEPT('Date', 'Date'[Year], 'Date'[Month])
+			)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: 3f804f9b-da82-53ea-926c-1b74558629f7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'POS High Replacement Channels' = ```
+			
+			IF(
+			    [POS Replacement Count] > 3,
+			    "High",
+			    "Normal"
+			)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: e83661fb-abba-56d8-b56b-a725682b010d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'POS Avg Days Between Replacements' = ```
+			
+			VAR Dates =
+			    CALCULATETABLE(
+			        VALUES('Date'[Full Date]),
+			        POSDeviceChange[ChangeType] = "Replacement"
+			    )
+			VAR SortedDates =
+			    ADDCOLUMNS(
+			        Dates,
+			        "NextDate",
+			            CALCULATE(
+			                MIN('Date'[Full Date]),
+			                FILTER(
+			                    Dates,
+			                    'Date'[Full Date] > EARLIER('Date'[Full Date])
+			                )
+			            )
+			    )
+			VAR Differences =
+			    SELECTCOLUMNS(
+			        FILTER(SortedDates, NOT ISBLANK([NextDate])),
+			        "Diff",
+			            DATEDIFF('Date'[Full Date], [NextDate], DAY)
+			    )
+			RETURN
+			IF(
+			    COUNTROWS(Differences) = 0,
+			    BLANK(),
+			    AVERAGEX(Differences, [Diff])
+			)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: 363e885a-a372-5b27-824b-610f411f814f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'POS Most Replaced Model' = ```
+			
+			CALCULATE(
+			    FIRSTNONBLANK(POSDeviceChange[OldSerialNumber], 1),
+			    POSDeviceChange[ChangeType] = "Replacement"
+			)
+			
+			```
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: 7301aa87-b78d-5d77-b9ea-c779cb23657a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Device Replacement Rate %' =
+			
+			DIVIDE([POS Replacement Count], [Active POS Devices], 0)
+		displayFolder: Requirement 03 - POS Channel Analysis
+		lineageTag: 8b1cfbe4-4e85-5021-973c-21ee592f6abf
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Purchase Quantity' =
+			
+			SUM('Purchase'[Quantity])
+		displayFolder: Requirement 04, 05 - Vendor Performance
+		lineageTag: 94183d6f-31b1-5ada-82a9-42a20219c83a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Purchase Amount' =
+			
+			SUM('Purchase'[Line Amount])
+		displayFolder: Requirement 04, 05 - Vendor Performance
+		lineageTag: bda9590a-e25c-53d4-8329-5c664cb28ae2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Purchase Orders' =
+			
+			DISTINCTCOUNT('Purchase'[TransactionNumber])
+		displayFolder: Requirement 04, 05 - Vendor Performance
+		lineageTag: 3d96201e-a360-5abd-88a4-deea7e201a4c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Vendor Product Rank' =
+			
+			// Dynamic rank of products per Vendor & Store combination
+			
+			IF(
+			    ISINSCOPE('Product'[Product Name]),
+			    RANKX(
+			        ALLSELECTED('Product'[Product Name]),
+			        [Total Purchase Quantity],
+			        ,
+			        DESC,
+			        Dense
+			    )
+			)
+		displayFolder: Requirement 04, 05 - Vendor Performance
+		lineageTag: 94496253-846e-5dcd-8b9f-716424f10c7a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Is Top Vendor Product' = ```
+			
+			// Helper measure to isolate Top N (e.g., Top 1 or Top 5) products in table visuals
+			
+			VAR _Rank = [Vendor Product Rank]
+			RETURN 
+			    IF(
+			        NOT ISBLANK(_Rank) && _Rank <= 5, -- Change 5 to 1 if you only want the single most ordered product
+			        1,
+			        0
+			    )
+			```
+		displayFolder: Requirement 04, 05 - Vendor Performance
+		lineageTag: b377ffe8-1a71-541d-8e3b-71bbe98be36e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Vendor Delivery Days' = ```
+			
+			AVERAGEX(
+			    'Purchase',
+			    VAR _OrderDateKey = 'Purchase'[OrderDateKey]
+			    VAR _DeliveryDateKey = 'Purchase'[DeliveryDateKey]
+			    
+			    -- Safe conversion for Order Date
+			    VAR _OrderDate = 
+			        IF(
+			            NOT ISBLANK(_OrderDateKey) && _OrderDateKey > 0,
+			            DATE(
+			                QUOTIENT(_OrderDateKey, 10000), 
+			                MOD(QUOTIENT(_OrderDateKey, 100), 100), 
+			                MOD(_OrderDateKey, 100)
+			            )
+			        )
+			        
+			    -- Safe conversion for Delivery Date
+			    VAR _DeliveryDate = 
+			        IF(
+			            NOT ISBLANK(_DeliveryDateKey) && _DeliveryDateKey > 0,
+			            DATE(
+			                QUOTIENT(_DeliveryDateKey, 10000), 
+			                MOD(QUOTIENT(_DeliveryDateKey, 100), 100), 
+			                MOD(_DeliveryDateKey, 100)
+			            )
+			        )
+			    RETURN
+			        IF(
+			            NOT ISBLANK(_OrderDate) && NOT ISBLANK(_DeliveryDate),
+			            DATEDIFF(_OrderDate, _DeliveryDate, DAY)
+			        )
+			)
+			```
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: e65d5291-bce3-53fe-86dd-71ed2fc6fbcf
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Fulfillment Lead Time (Days)' = ```
+			
+			// Days elapsed from order placement until vendor shipment (Fulfillment Lead Time)
+			
+			AVERAGEX(
+			    'Purchase',
+			    VAR _OrderDateKey = 'Purchase'[OrderDateKey]
+			    VAR _ShipDateKey = 'Purchase'[ShipDateKey]
+			    VAR _OrderDate = 
+			        DATE(
+			            QUOTIENT(_OrderDateKey, 10000), 
+			            MOD(QUOTIENT(_OrderDateKey, 100), 100), 
+			            MOD(_OrderDateKey, 100)
+			        )
+			    VAR _ShipDate = 
+			        DATE(
+			            QUOTIENT(_ShipDateKey, 10000), 
+			            MOD(QUOTIENT(_ShipDateKey, 100), 100), 
+			            MOD(_ShipDateKey, 100)
+			        )
+			    RETURN
+			        DATEDIFF(_OrderDate, _ShipDate, DAY)
+			)
+			```
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: f5c63c36-9a50-5c81-bbaf-b4b4cb2239a9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Transit Time (Days)' = ```
+			
+			// Transit time from vendor dispatch to store receipt
+			
+			AVERAGEX(
+			    'Purchase',
+			    VAR _ShipDateKey = 'Purchase'[ShipDateKey]
+			    VAR _DeliveryDateKey = 'Purchase'[DeliveryDateKey]
+			    VAR _ShipDate = 
+			        DATE(
+			            QUOTIENT(_ShipDateKey, 10000), 
+			            MOD(QUOTIENT(_ShipDateKey, 100), 100), 
+			            MOD(_ShipDateKey, 100)
+			        )
+			    VAR _DeliveryDate = 
+			        DATE(
+			            QUOTIENT(_DeliveryDateKey, 10000), 
+			            MOD(QUOTIENT(_DeliveryDateKey, 100), 100), 
+			            MOD(_DeliveryDateKey, 100)
+			        )
+			    RETURN
+			        DATEDIFF(_ShipDate, _DeliveryDate, DAY)
+			)
+			```
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: d903e1eb-67a3-5848-901a-657170e61048
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Late Deliveries Count' = ```
+			
+			// Count of orders that took longer than the agreed target threshold (e.g., > 14 days)
+			
+			VAR _SLAThresholdDays = 14
+			RETURN
+			    CALCULATE(
+			        COUNTROWS('Purchase'),
+			        FILTER(
+			            'Purchase',
+			            VAR _OrderKey = 'Purchase'[OrderDateKey]
+			            VAR _DeliveryKey = 'Purchase'[DeliveryDateKey]
+			            VAR _OrderDate = 
+			                DATE(
+			                    QUOTIENT(_OrderKey, 10000), 
+			                    MOD(QUOTIENT(_OrderKey, 100), 100), 
+			                    MOD(_OrderKey, 100)
+			                )
+			            VAR _DeliveryDate = 
+			                DATE(
+			                    QUOTIENT(_DeliveryKey, 10000), 
+			                    MOD(QUOTIENT(_DeliveryKey, 100), 100), 
+			                    MOD(_DeliveryKey, 100)
+			                )
+			            RETURN
+			                DATEDIFF(_OrderDate, _DeliveryDate, DAY) > _SLAThresholdDays
+			        )
+			    )
+			```
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: 6360c9cb-b23f-5c2e-abdb-e38c204f9947
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Late Delivery Rate %' =
+			
+			DIVIDE([Late Deliveries Count], [Total Purchase Orders], 0)
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: 5cd77173-b209-509c-9adc-89793d5565f1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Pre-Change Avg Delivery Days' =
+			
+			// Average Delivery Time prior to vendor detail change
+			
+			CALCULATE(
+			    [Avg Vendor Delivery Days],
+			    'Vendor'[IsCurrent] = FALSE()
+			)
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: 69beb763-d800-5c9c-bc7f-eedaec3743e6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Post-Change Avg Delivery Days' =
+			
+			// Average Delivery Time after vendor detail change
+			
+			CALCULATE(
+			    [Avg Vendor Delivery Days],
+			    'Vendor'[IsCurrent] = TRUE()
+			)
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: 30d142e7-6616-5bc8-9565-164f1c509421
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Delivery Impact Variance (Days)' =
+			
+			[Post-Change Avg Delivery Days] - [Pre-Change Avg Delivery Days]
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: 7e46312a-5948-5d7d-a09f-216a0eba4715
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Orders Delivered' =
+			
+			CALCULATE(
+			    [Total Purchase Orders],
+			    USERELATIONSHIP('Purchase'[DeliveryDateKey], 'Date'[DateKey])
+			)
+		displayFolder: Requirement 04, 05 - Vendor Performance
+		lineageTag: 72dcd813-3a62-504a-8d10-db35b940aced
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Orders Shipped' =
+			
+			CALCULATE(
+			    [Total Purchase Orders],
+			    USERELATIONSHIP('Purchase'[ShipDateKey], 'Date'[DateKey])
+			)
+		displayFolder: Requirement 04, 05 - Vendor Performance
+		lineageTag: 697a8210-ad67-5fbe-97fc-03acf46303c9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Discount Depth %' =
+			
+			DIVIDE([Total Discounts], [Gross Sales], 0)
+		displayFolder: Requirement 01 - Promotional Analysis
+		lineageTag: 8242c80e-f26a-5997-af68-d39791bba7eb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Discount to Promo Sales Ratio' =
+			
+			// Measures how much revenue was sacrificed to gain promo sales
+			
+			DIVIDE([Total Discounts], [Promo Sales], 0)
+		displayFolder: Requirement 01 - Promotional Analysis
+		lineageTag: bed18a6e-9f2f-51a3-9f4d-78d965cfbdc1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Net Sales' =
+			
+			[Store Gross Sales] - [Store Total Discounts]
+		displayFolder: Store Performance Analysis
+		lineageTag: 44afec9f-a19f-5997-9609-53cd3a24e0eb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Transaction Count' =
+			
+			DISTINCTCOUNT('Sales'[TransactionNumber])
+		displayFolder: Store Performance Analysis
+		lineageTag: 947dddf0-ed64-5a28-b8fb-5a8e190b0d8f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Average Order Value' =
+			
+			DIVIDE([Store Net Sales], [Store Transaction Count], 0)
+		displayFolder: Store Performance Analysis
+		lineageTag: 0a7d2c45-7039-583a-b823-5413325699e5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Units Per Transaction' =
+			
+			DIVIDE(SUM('Sales'[Quantity]), [Store Transaction Count], 0)
+		displayFolder: Store Performance Analysis
+		lineageTag: 174cb656-d2b4-59ab-a8fa-8108fc8ca260
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Network Avg Store Sales' = ```
+			
+			-- Average Net Sales per store location across the active filter context
+			 
+			CALCULATE(
+			    AVERAGEX(
+			        VALUES('Store'[StoreID]),
+			        [Store Net Sales]
+			    ),
+			    ALLSELECTED('Store')
+			)
+			```
+		displayFolder: Store Performance Analysis
+		lineageTag: d5a20dd8-7b68-5525-a811-0cc8e97ef6a5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Sales Rank' =
+			
+			IF(
+			    ISINSCOPE('Store'[Store Name]) || ISINSCOPE('Store'[StoreID]),
+			    RANKX(
+			        ALLSELECTED('Store'[Store Name]),
+			        [Store Net Sales],
+			        ,
+			        DESC,
+			        Dense
+			    )
+			)
+		displayFolder: Store Performance Analysis
+		lineageTag: 6b23588c-9cfe-571f-b6ab-d639a140c642
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store vs Network Avg %' =
+			
+			VAR _NetworkAvg = [Network Avg Store Sales]
+			RETURN
+			    DIVIDE([Store Net Sales] - _NetworkAvg, _NetworkAvg, 0)
+		displayFolder: Store Performance Analysis
+		lineageTag: 85e5b648-7b32-59f5-b98b-b07f572e728d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Performance Status' =
+			
+			VAR _StoreSales = [Store Net Sales]
+			VAR _NetworkAvg = [Network Avg Store Sales]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(_StoreSales), BLANK(),
+			        _StoreSales >= _NetworkAvg * 1.15, "Top Performer",
+			        _StoreSales <= _NetworkAvg * 0.85, "Underperformer",
+			        "Average Performer"
+			    )
+		displayFolder: Store Performance Analysis
+		lineageTag: cc2fc891-10c9-597f-8af2-0ec642916a7b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Gross Sales' =
+			
+			SUM('Sales'[Line Amount])
+		displayFolder: Store Performance Analysis
+		lineageTag: e1c45f3f-1686-5d65-b7f9-66654409da35
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Total Discounts' =
+			
+			SUM('Sales'[Line discount amount])
+		displayFolder: Store Performance Analysis
+		lineageTag: 6584cd6e-8cc4-5146-b476-f4ebff3d0dbc
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Items Per Basket' = ```
+			
+			DIVIDE(
+			    COUNTROWS('Sales'), 
+			    [Store Transaction Count], 
+			    0
+			)
+			```
+		displayFolder: Store Performance Analysis
+		lineageTag: 0cb42e25-b002-51a7-a189-61e907435356
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rebranded Product Sales' = ```
+			
+			CALCULATE(
+			    [Store Net Sales],
+			    KEEPFILTERS('Product'[IsRebranded] = TRUE()) 
+			)
+			```
+		displayFolder: Requirement 06, 08 Rebranding
+		lineageTag: 34f9dd79-5971-5ad7-978e-21e6e98a8e70
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Original Product Sales' =
+			
+			CALCULATE(
+			    [Store Net Sales],
+			    KEEPFILTERS('Product'[IsRebranded] = FALSE())
+			)
+		displayFolder: Requirement 06, 08 Rebranding
+		lineageTag: 2a14dc4e-498f-5559-83f8-81afb8c34879
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rebrand Sales Contribution %' =
+			
+			DIVIDE([Rebranded Product Sales], [Total Brand Sales], 0)
+		displayFolder: Requirement 06, 08 Rebranding
+		lineageTag: db6058a3-e0ef-5057-98ef-8a13b1bb531b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rebranded Units Sold' =
+			
+			CALCULATE(
+			    SUM('Sales'[Quantity]),
+			    'Product'[IsRebranded] = TRUE()
+			)
+		displayFolder: Requirement 06, 08 Rebranding
+		lineageTag: 75fadb69-9c1d-5f28-badd-21fd372533ee
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rebrand Sales Lift %' =
+			
+			VAR _OriginalSales = [Original Product Sales]
+			VAR _RebrandedSales = [Rebranded Product Sales]
+			RETURN
+			    DIVIDE(_RebrandedSales - _OriginalSales, _OriginalSales, 0)
+		displayFolder: Requirement 06, 08 Rebranding
+		lineageTag: d3a01874-ffc3-5bcd-89b4-5479790e1dc6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Overtime Hours' =
+			
+			SUM('Overtime'[Overtime Hours])
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: e88cb37a-3320-5e37-b6c0-fb2005217462
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Overtime Employee Count' =
+			
+			// Distinct count of employees recording overtime
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Overtime'[EmployeeKey]),
+			    'Overtime'[Overtime Hours] > 0
+			)
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: e4217bda-ed12-530c-9079-22751515c1ee
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Overtime Hours Per Employee' =
+			
+			DIVIDE([Total Overtime Hours], [Overtime Employee Count], 0)
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: 2550bf7f-a859-58a4-99f2-4534e4e78cd1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Single Overtime Hours' =
+			
+			CALCULATE(
+			    [Total Overtime Hours],
+			    'Employee'[Marital Status] = "Single"
+			)
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: 5188fb3b-eb5f-53c5-97ec-5c80b0260323
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Married Overtime Hours' =
+			
+			CALCULATE(
+			    [Total Overtime Hours],
+			    'Employee'[Marital Status] = "Married"
+			)
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: 4c3bff29-b852-52a4-b4bb-7a83b45ed499
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marital Status Overtime Share %' = ```
+			
+			VAR _TotalOvertimeAllStatuses = 
+			    CALCULATE(
+			        [Total Overtime Hours],
+			        REMOVEFILTERS('Employee'[Marital Status])
+			    )
+			RETURN
+			    DIVIDE([Total Overtime Hours], _TotalOvertimeAllStatuses, 0)
+			```
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: 2c5c9305-28a2-597f-b415-70f27fefcbce
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Overtime Variance vs Overall Avg' = ```
+			
+			// Variance in Avg Overtime vs. Overall Company Average
+			
+			VAR _OverallAvg = 
+			    CALCULATE(
+			        [Avg Overtime Hours Per Employee],
+			        REMOVEFILTERS('Employee'[Marital Status])
+			    )
+			VAR _CurrentAvg = [Avg Overtime Hours Per Employee]
+			RETURN
+			    IF(
+			        NOT ISBLANK(_CurrentAvg),
+			        _CurrentAvg - _OverallAvg
+			    )
+			```
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: 7de991c0-4d17-5736-b2ad-dffa4f4fba6a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Single Parent Overtime Hours' =
+			
+			CALCULATE(
+			    [Total Overtime Hours],
+			    'Employee'[Marital Status] = "Single Parent"
+			)
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: 7e5c8640-f75a-5f13-b4e6-05dabe0de485
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Divorced Overtime Hours' =
+			
+			CALCULATE(
+			    [Total Overtime Hours],
+			    'Employee'[Marital Status] = "Divorce"
+			)
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: 0c0926f9-0523-52c9-9bd3-0dfc6b90c183
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Widowed Overtime Hours' =
+			
+			CALCULATE(
+			    [Total Overtime Hours],
+			    'Employee'[Marital Status] = "Widow"
+			)
+		displayFolder: Requirement 07 - HR Overtime
+		lineageTag: 89f60966-f6e8-5d80-b6c8-bda45f97eb4e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Brand Sales' =
+			
+			[Store Net Sales]
+		displayFolder: Requirement 06, 08 Rebranding
+		lineageTag: b2c55665-9944-5e68-b4a3-178b1f72c74c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rebrand to Standard Brand Ratio' =
+			
+			DIVIDE([Rebranded Product Sales], [Original Product Sales], 0)
+		displayFolder: Requirement 06, 08 Rebranding
+		lineageTag: b9eff4f8-689b-55f0-a568-431d7915d5e2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Network Avg Vendor Delivery Days' =
+			
+			CALCULATE(
+			    [Avg Vendor Delivery Days],
+			    REMOVEFILTERS('Vendor')
+			)
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: d98375e6-1d5c-5b51-a828-6e003f3ccd61
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Vendor Delivery Variance Days' =
+			
+			VAR _VendorAvg = [Avg Vendor Delivery Days]
+			VAR _NetworkAvg = [Network Avg Vendor Delivery Days]
+			RETURN
+			    IF(
+			        NOT ISBLANK(_VendorAvg),
+			        _VendorAvg - _NetworkAvg
+			    )
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: e3d645c7-c519-5d72-9716-742ad7e2eb7c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Vendor Delivery Efficiency Rank' =
+			
+			IF(
+			    NOT ISBLANK([Avg Vendor Delivery Days]),
+			    RANKX(
+			        ALL('Vendor'),
+			        [Avg Vendor Delivery Days],
+			        ,
+			        ASC,
+			        Dense
+			    )
+			)
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: 8921b3a7-b988-5409-9827-0c9027c4104b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Vendor Delivery Efficiency Rating' =
+			
+			VAR _Variance = [Vendor Delivery Variance Days]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(_Variance), BLANK(),
+			        _Variance <= -2, "Highly Efficient (Fast)",
+			        _Variance <= 1, "On Target",
+			        "Delayed / Inefficient"
+			    )
+		displayFolder: Requirement 09 - Vendor Efficiency
+		lineageTag: f4f6835d-d85f-5c14-ad8d-32a70549c6ee
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Product Rank by Time Period' =
+			
+			IF(
+			    ISINSCOPE('Product'[Product Name]) && NOT ISBLANK([Total Units Sold]),
+			    RANKX(
+			        ALLSELECTED('Product'[Product Name]),
+			        [Total Units Sold],
+			        ,
+			        DESC,
+			        Dense
+			    )
+			)
+		displayFolder: Requirement 10 - Time Period Demand
+		lineageTag: ad2c338f-b60c-54a3-9493-f9d4c03161a3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Is Top N Product Per Period' =
+			
+			VAR _TopNThreshold = 5 -- Change to 3, 5, or 10 based on reporting needs
+			VAR _CurrentRank = [Product Rank by Time Period]
+			RETURN
+			    IF(
+			        NOT ISBLANK(_CurrentRank) && _CurrentRank <= _TopNThreshold,
+			        1,
+			        0
+			    )
+		displayFolder: Requirement 10 - Time Period Demand
+		lineageTag: f1fc7a08-3c39-5715-8de9-7348e267f047
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Time Period Units Share %' = ```
+			
+			VAR _TotalUnitsAllPeriods = 
+			    CALCULATE(
+			        [Total Units Sold],
+			        REMOVEFILTERS('Time'[Day Period Of Day]),
+			        REMOVEFILTERS('Time'[Time Status])
+			    )
+			RETURN
+			    DIVIDE([Total Units Sold], _TotalUnitsAllPeriods, 0)
+			```
+		displayFolder: Requirement 10 - Time Period Demand
+		lineageTag: a330a19e-8ed8-55f9-a2cd-aab059892250
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Misconduct Incidents' =
+			
+			SUM('Misconduct'[Incident Count])
+		displayFolder: Requirement 11 - Employee Misconduct
+		lineageTag: c24296b9-98c3-5ab6-bc95-0837fd575df3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Employees with Misconduct' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Misconduct'[EmployeeKey]),
+			    'Misconduct'[Incident Count] > 0
+			)
+		displayFolder: Requirement 11 - Employee Misconduct
+		lineageTag: e7fc2948-48bf-53fc-9837-d528d0c0c20d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Incidents per Offending Employee' =
+			
+			DIVIDE(
+			    [Total Misconduct Incidents],
+			    [Employees with Misconduct],
+			    0
+			)
+		displayFolder: Requirement 11 - Employee Misconduct
+		lineageTag: 205d3123-74be-5cc1-af09-a54869981a69
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Misconduct Rate per Employee' =
+			
+			VAR _TotalActiveEmployees = DISTINCTCOUNT('Employee'[EmployeeKey])
+			RETURN
+			    DIVIDE(
+			        [Total Misconduct Incidents],
+			        _TotalActiveEmployees,
+			        0
+			    )
+		displayFolder: Requirement 11 - Employee Misconduct
+		lineageTag: c5a00c3f-cdd7-59d8-9646-bbf8e97fc1c0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Misconduct Rank' =
+			
+			IF(
+			    NOT ISBLANK([Total Misconduct Incidents]),
+			    RANKX(
+			        ALL('Store'),
+			        [Total Misconduct Incidents],
+			        ,
+			        DESC,
+			        Dense
+			    )
+			)
+		displayFolder: Requirement 11 - Employee Misconduct
+		lineageTag: 114cf3c0-ab4d-518d-a3e8-b33c122ce067
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Absence Incidents' =
+			
+			SUM('Absence'[Absence Count])
+		displayFolder: Requirement 12 - Employee Absence
+		lineageTag: 0e92ca7d-72bd-5013-9278-32f35dc5cca3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Absent Hours' =
+			
+			SUM('Absence'[Absent Hours])
+		displayFolder: Requirement 12 - Employee Absence
+		lineageTag: 764bc360-cd29-5559-83c4-a287264e7e24
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Hours per Absence' =
+			
+			DIVIDE(
+			    [Total Absent Hours],
+			    [Total Absence Incidents],
+			    0
+			)
+		displayFolder: Requirement 12 - Employee Absence
+		lineageTag: 1048a193-a83a-5c4f-8d1b-4f6f801faff5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Employees with Absence' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Absence'[EmployeeKey]),
+			    'Absence'[Absence Count] > 0
+			)
+		displayFolder: Requirement 12 - Employee Absence
+		lineageTag: af380291-4760-5844-b4f0-c2ccd338c2e6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Absent Hours per Employee' =
+			
+			DIVIDE(
+			    [Total Absent Hours],
+			    [Employees with Absence],
+			    0
+			)
+		displayFolder: Requirement 12 - Employee Absence
+		lineageTag: b2c6c732-21ec-5c54-a55c-9645287a020f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Absence Rate %' = ```
+			
+			VAR _TotalScheduledHours = 
+			// -- 160 standard working hours per month baseline
+			    DISTINCTCOUNT('Employee'[EmployeeKey]) * 160 
+			RETURN
+			    DIVIDE([Total Absent Hours], _TotalScheduledHours, 0)
+			```
+		displayFolder: Requirement 12 - Employee Absence
+		lineageTag: 6520ef5b-3db8-594e-8937-dc584389a43f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Store Absence Hours Rank' =
+			
+			IF(
+			    NOT ISBLANK([Total Absent Hours]),
+			    RANKX(
+			        ALL('Store'),
+			        [Total Absent Hours],
+			        ,
+			        DESC,
+			        Dense
+			    )
+			)
+		displayFolder: Requirement 12 - Employee Absence
+		lineageTag: 3bac108b-4550-5c45-b478-f97f8d15ad86
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Revenue' = ```
+			SUM( Sales[Line Amount] ) - SUM( Sales[Line discount amount] )
+			
+			```
+		displayFolder: Profitability\Sales Metrics
+		lineageTag: ab32b619-ec75-5dea-9403-df7934ca286f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Profit Margin %' =
+			
+			DIVIDE(
+			    [Gross Profit],
+			    [Net Revenue],
+			    0
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Profitability
+		lineageTag: 0001c56b-1da7-5d86-ac97-c0959f6ee033
+
+	measure 'Total Quantity Sold' = SUM(Sales[Quantity])
+		displayFolder: Profitability\Sales Metrics
+		lineageTag: 23a34d5a-8391-5ff1-a79b-00d7b727ed6a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Net Price' = DIVIDE([Net Revenue] , [Total Quantity Sold], 0)
+		displayFolder: Profitability\Sales Metrics
+		lineageTag: dfa3fbb1-47d6-55a0-b8f3-20e772dbd8f8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Purchased Quantity' = SUM(Purchase[Quantity])
+		displayFolder: Profitability\Purchase Metrics
+		lineageTag: 5edd0b68-0e80-57ba-8e59-0120388c3986
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Production Cost' =
+			
+			SUM( 'Purchase'[Line Amount] ) + SUM( 'Purchase'[Tax Amount] )
+		displayFolder: Profitability\Purchase Metrics
+		lineageTag: d33f33c3-12c2-57c0-9a9d-93f575095d99
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Unit Cost' = ```
+			
+			DIVIDE(
+			    [Production Cost],
+			    [Purchased Quantity],
+			    0
+			)
+			
+			```
+		displayFolder: Profitability\Purchase Metrics
+		lineageTag: 7d552a61-5e3c-52a8-974c-8bbbaba2272d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure COGS = ```
+			
+			VAR _SelectedYear = SELECTEDVALUE( 'Date'[Year] )
+			RETURN
+			    IF (
+			        ISBLANK( _SelectedYear ),
+			        BLANK(),
+			        SUMX(
+			            'Sales',
+			            VAR _SalesQty = 'Sales'[Quantity]
+			            VAR _ContextCost = 
+			                CALCULATE(
+			                    [Average Unit Cost],
+			                    REMOVEFILTERS( 'Date' ), -- Clear the matrix layout constraint
+			                    -- Filter the 8-digit Purchase key to fall within the selected year
+			                    'Purchase'[OrderDateKey] >= ( _SelectedYear * 10000 + 0101 ) &&
+			                    'Purchase'[OrderDateKey] <= ( _SelectedYear * 10000 + 1231 )
+			                )
+			            RETURN
+			                _SalesQty * _ContextCost
+			        )
+			    )
+			
+			```
+		displayFolder: Profitability
+		lineageTag: 8d550298-1e52-58f9-af37-4f46a52132a5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Gross Profit' =
+			
+			[Net Revenue] - [COGS]
+		displayFolder: Profitability
+		lineageTag: 51ff93da-71a0-52ab-aaef-668546a1b573
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Dynamic Top N Net Revenue' = ```
+			
+			VAR _SelectedN = [Top N Selection Value] -- Reads the value from your slider
+			VAR _ProductRank = 
+			    IF(
+			        ISINSCOPE('Product'[Product Name]),
+			        RANKX(
+			            ALLSELECTED('Product'[Product Name]),
+			            [Net Revenue], -- Ranks products by Net Revenue
+			            ,
+			            DESC,
+			            Dense
+			        ),
+			        BLANK()
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK([Net Revenue]) && _ProductRank <= _SelectedN,
+			        [Net Revenue],
+			        BLANK()
+			    )
+			
+			```
+		displayFolder: Profitability
+		lineageTag: db059638-4fed-566c-af1d-2a3b3a06ab6b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Growth Status Indicator' = ```
+			
+			VAR _RevGrowth = 
+			    DIVIDE(
+			        [Net Revenue] - CALCULATE([Net Revenue], SAMEPERIODLASTYEAR('Date'[Full Date])),
+			        CALCULATE([Net Revenue], SAMEPERIODLASTYEAR('Date'[Full Date])),
+			        0
+			    )
+			VAR _CostGrowth = 
+			    DIVIDE(
+			        [Production Cost] - CALCULATE([Production Cost], SAMEPERIODLASTYEAR('Date'[Full Date])),
+			        CALCULATE([Production Cost], SAMEPERIODLASTYEAR('Date'[Full Date])),
+			        0
+			    )
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(_RevGrowth) && ISBLANK(_CostGrowth), BLANK(),
+			        _CostGrowth > _RevGrowth, 1,    // Danger Zone: Costs rising faster than sales
+			        _RevGrowth >= _CostGrowth, 2,   // Healthy Zone: Sales outpacing costs
+			        3                              // Neutral Fallback
+			    )
+			
+			```
+		displayFolder: Profitability
+		lineageTag: 8eb70e37-a1c8-5c6c-847d-91b02d1e5f15
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Margin Card Color' = ```
+			
+			VAR _TargetMargin = 0.15 -- target margin (15%)
+			VAR _CurrentMargin = [Gross Profit Margin %]
+			RETURN
+			    IF(
+			        ISBLANK(_CurrentMargin),
+			        "#FFFFFF", -- Default White if no data
+			        IF(
+			            _CurrentMargin < _TargetMargin,
+			            "#FADBD8", -- Soft Coral Red for underperformance
+			            "#D4EFDF"  -- Soft Mint Green for healthy margins
+			        )
+			    )
+			
+			```
+		displayFolder: Profitability
+		lineageTag: 4a32819e-690c-53ea-a515-80ab3ad31a66
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue Card Color' = ```
+			
+			VAR _RevenueGrowth = 
+			    CALCULATE(
+			        [Net Revenue], -- base measure
+			        'Time Intelligence'[Period] = "YoY Growth %" -- calculation item name
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_RevenueGrowth),
+			        "#FFFFFF", -- Default White
+			        IF(
+			            _RevenueGrowth < 0,
+			            "#FADBD8", -- Soft Coral Red for declining revenue
+			            "#D4EFDF"  -- Soft Mint Green for positive growth
+			        )
+			    )
+			
+			```
+		displayFolder: Profitability
+		lineageTag: 143cce8a-108b-55ef-991c-9553ba678799
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Dynamic Bridge Value' =
+			
+			SWITCH(
+			    SELECTEDVALUE('FinancialBridge'[StepID]),
+			    1, [Net Revenue],
+			    // 2, -[COGS],          -- Cleans up the bridge by dropping the cost bar DOWN
+			    3, [Gross Profit],
+			    BLANK()
+			)
+		displayFolder: Profitability
+		lineageTag: 5ba0c104-b30a-536a-9fa3-9f6de13d5a6b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Dynamic Bottom N Net Revenue' = ```
+			
+			VAR _SelectedN = [Top N Selection Value] -- Reads the value from your existing slider
+			VAR _ProductRank = 
+			    IF(
+			        ISINSCOPE('Product'[Product Name]),
+			        RANKX(
+			            ALLSELECTED('Product'[Product Name]),
+			            [Net Revenue],
+			            ,
+			            ASC, -- Enforces ascending order to rank lowest revenue products as #1
+			            Dense
+			        ),
+			        BLANK()
+			    )
+			RETURN
+			    IF(
+			        NOT ISBLANK([Net Revenue]) && _ProductRank <= _SelectedN,
+			        [Net Revenue],
+			        BLANK()
+			    )
+			
+			```
+		displayFolder: Profitability
+		lineageTag: 8155c49c-ba52-5c1f-b57b-23430ab1bfc3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Financial Bridge Color' = ```
+			
+			SWITCH(
+			    SELECTEDVALUE('FinancialBridge'[StepID]),
+			    1, "#10B981", -- 1. Net Revenue: Soft Emerald Green
+			    2, "#EF4444", -- 2. Less: COGS: Soft Coral Red
+			    3, "#0A2540", -- 3. Gross Profit: Corporate Deep Navy
+			    "#0A2540"     -- Fallback color
+			)
+			
+			```
+		displayFolder: Profitability
+		lineageTag: 83be54e4-e667-5340-9c24-7a81845549c3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Bridge Expense Line' = ```
+			
+			IF(
+			    SELECTEDVALUE('FinancialBridge'[StepID]) = 2,
+			    [COGS],
+			    BLANK()
+			)
+			
+			```
+		displayFolder: Profitability
+		lineageTag: a02dcb49-c7f4-58a8-ad64-e73346b7f4cf
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marginal Revenue' = ```
+			
+			VAR _CurrentRevenue = [Net Revenue]
+			VAR _CurrentQty = [Total Quantity Sold]
+			
+			-- Grabs net sales revenue from the immediate prior period block
+			VAR _PriorRevenue = 
+			    CALCULATE(
+			        [Net Revenue],
+			        OFFSET(
+			            -1, 
+			            ALLSELECTED('Date'[Year], 'Date'[Quarter], 'Date'[Month Name]), 
+			            ORDERBY('Date'[Year], ASC, 'Date'[Month Name], ASC)
+			        )
+			    )
+			
+			-- Grabs total units sold from the immediate prior period block
+			VAR _PriorQty = 
+			    CALCULATE(
+			        [Total Quantity Sold],
+			        OFFSET(
+			            -1, 
+			            ALLSELECTED('Date'[Year], 'Date'[Quarter], 'Date'[Month Name]), 
+			            ORDERBY('Date'[Year], ASC, 'Date'[Month Name], ASC)
+			        )
+			    )
+			
+			VAR _DeltaRevenue = _CurrentRevenue - _PriorRevenue
+			VAR _DeltaQuantity = _CurrentQty - _PriorQty
+			
+			RETURN
+			    DIVIDE(_DeltaRevenue, _DeltaQuantity, BLANK())
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Profitability\Sales Metrics
+		lineageTag: e1f216ce-dcea-5fe7-a6d7-df8f4b35527f
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Marginal Production Cost' = ```
+			
+			VAR _CurrentCost = [Production Cost]
+			VAR _CurrentQty = [Purchased Quantity]
+			
+			-- Automatically finds the prior period based on whatever date fields are in your visual rows
+			VAR _PriorCost = 
+			    CALCULATE(
+			        [Production Cost],
+			        OFFSET(
+			            -1, 
+			            ALLSELECTED('Date'[Year], 'Date'[Quarter], 'Date'[Month Name]), 
+			            ORDERBY('Date'[Year], ASC, 'Date'[Month Name], ASC)
+			        )
+			    )
+			
+			VAR _PriorQty = 
+			    CALCULATE(
+			        [Purchased Quantity],
+			        OFFSET(
+			            -1, 
+			            ALLSELECTED('Date'[Year], 'Date'[Quarter], 'Date'[Month Name]), 
+			            ORDERBY('Date'[Year], ASC, 'Date'[Month Name], ASC)
+			        )
+			    )
+			
+			VAR _DeltaCost = _CurrentCost - _PriorCost
+			VAR _DeltaQty = _CurrentQty - _PriorQty
+			
+			RETURN
+			    DIVIDE(_DeltaCost, _DeltaQty, BLANK())
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Profitability\Purchase Metrics
+		lineageTag: 075a2f6b-7f28-598c-984b-c5e99f95c0f0
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Marginal Profit Spread' = [Marginal Revenue] - [Marginal Production Cost]
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Profitability
+		lineageTag: bbc8f687-019c-53bd-ab73-d91e9653eac9
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Marginal Efficiency Ratio' =
+			
+			DIVIDE([Marginal Revenue], [Marginal Production Cost], 0)
+		displayFolder: Profitability
+		lineageTag: 791d4e1c-f7e2-5814-9c07-01d32bcc9ba0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Marginal Status Indicator' = ```
+			
+			VAR _MarginalRev = [Marginal Revenue]
+			VAR _MarginalCost = [Marginal Production Cost]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(_MarginalRev) && ISBLANK(_MarginalCost), BLANK(),
+			        _MarginalCost > _MarginalRev, 1,    -- Danger Zone: Cost to produce 1 extra unit is higher than its revenue
+			        _MarginalRev >= _MarginalCost, 2,   -- Healthy Zone: Extra unit revenue covers its cost
+			        3                                  -- Fallback
+			    )
+			
+			```
+		displayFolder: Profitability
+		lineageTag: 661659aa-3c1f-5a1a-ba17-0bd19a39e438
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Promo Sales Lift %' = ```
+			
+			VAR _PromoSales = CALCULATE([Net Revenue], 'Promotion'[Discount Percent] > 0)
+			VAR _BaseSales = CALCULATE([Net Revenue], 'Promotion'[Discount Percent] = 0)
+			RETURN 
+			    DIVIDE(_PromoSales, _BaseSales, 0)
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Sales & POS Performances
+		lineageTag: 31c6b0e7-c5b5-5b35-ad36-0df16c867d3a
+
+	measure 'Intraday Quantity Sold' = [Total Quantity Sold]
+		displayFolder: Sales & POS Performances
+		lineageTag: a39b7ad7-906b-5617-bb32-31403e6e0e3c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Co-Purchase Basket Count' = ```
+			
+			VAR _ActiveProduct = SELECTEDVALUE('Product'[ProductKey])
+			
+			-- Step 1: Find all transactions that contain the selected product
+			VAR _TransactionsWithActiveProduct = 
+			    CALCULATETABLE(
+			        VALUES('Sales'[TransactionNumber]),
+			        REMOVEFILTERS('Product'),
+			        'Sales'[ProductKey] = _ActiveProduct
+			    )
+			
+			RETURN
+			    IF(
+			        ISFILTERED('Product'[ProductKey]),
+			        CALCULATE(
+			            DISTINCTCOUNT('Sales'[TransactionNumber]),
+			            -- Step 2: Remove active product filter and apply the list of transactions
+			            REMOVEFILTERS('Product'),
+			            'Sales'[TransactionNumber] IN _TransactionsWithActiveProduct,
+			            -- Step 3: Exclude the selected product itself so you only count multi-item baskets
+			            'Sales'[ProductKey] <> _ActiveProduct
+			        )
+			    )
+			```
+		displayFolder: Sales & POS Performances
+		lineageTag: f5bf4f5b-6eff-54ed-b5c9-e1506bf72ac2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Device Lifespan (Days)' = ```
+			
+			VAR _TotalLifespan = 
+			    SUMX(
+			        'POSChannel',
+			        DATEDIFF('POSChannel'[ValidFrom], 'POSChannel'[ValidTo], DAY)
+			    )
+			RETURN 
+			    DIVIDE(_TotalLifespan, DISTINCTCOUNT('POSChannel'[ChannelKey]), BLANK())
+			
+			```
+		formatString: 0
+		displayFolder: Sales & POS Performances
+		lineageTag: ec1c6ace-3739-5aa7-a183-fa8356d0397c
+
+	measure 'POS Device Replacements' = COUNT('POSDeviceChange'[POSDeviceChangeKey])
+		formatString: 0
+		displayFolder: Sales & POS Performances
+		lineageTag: 8dc67c48-0f81-5cc7-a188-c0a431493101
+
+	measure 'Avg Days Between Replacement' =
+			
+			VAR _TotalReplacements = [POS Device Replacements]
+			VAR _TotalOperatingDays = DISTINCTCOUNT('Sales'[TransactionDateKey]) -- Active operational window
+			RETURN
+			    DIVIDE(_TotalOperatingDays, _TotalReplacements, BLANK())
+		displayFolder: Sales & POS Performances
+		lineageTag: 4144d638-ea23-59f7-a969-2dec5f636523
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Distinct Sales Transactions' = DISTINCTCOUNT('Sales'[TransactionNumber])
+		displayFolder: Sales & POS Performances
+		lineageTag: 6a048c25-762e-5da4-b494-d7dda7204962
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Basket Co-Purchase Count' = ```
+			
+			VAR _SelectedRowProductName = SELECTEDVALUE( 'Product'[Product Name] )
+			VAR _SelectedColProductName = SELECTEDVALUE( 'product_basket'[ProductName] )
+			RETURN
+			    IF (
+			        ISBLANK( _SelectedRowProductName ) || ISBLANK( _SelectedColProductName ),
+			        BLANK(),
+			        IF (
+			            -- Hide the diagonal row where a product matches itself
+			            _SelectedRowProductName = _SelectedColProductName, 
+			            BLANK(),
+			            
+			            -- Intersect using the literal Product Names via a shared data relationship
+			            VAR _RowTransactions = 
+			                CALCULATETABLE(
+			                    VALUES( 'Sales'[TransactionNumber] ),
+			                    'Product'[Product Name] = _SelectedRowProductName,
+			                    REMOVEFILTERS( 'Product' )
+			                )
+			            VAR _ColTransactions = 
+			                CALCULATETABLE(
+			                    VALUES( 'Sales'[TransactionNumber] ),
+			                    -- Map the cloned name back to the core Product table name field
+			                    TREATAS( { _SelectedColProductName }, 'Product'[Product Name] ),
+			                    REMOVEFILTERS( 'Product' )
+			                )
+			            RETURN
+			                COUNTROWS( INTERSECT( _RowTransactions, _ColTransactions ) )
+			        )
+			    )
+			
+			```
+		displayFolder: Sales & POS Performances
+		lineageTag: b6cfd18f-229b-509d-b991-84a4011944a8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Co-Purchase Transaction Count' = ```
+			
+			VAR _SelectedProduct =
+			    SELECTEDVALUE('Product'[Product Name])
+			
+			VAR _CoPurchaseProduct =
+			    SELECTEDVALUE('Product_Basket'[ProductName])
+			
+			RETURN
+			IF (
+			    NOT ISBLANK(_SelectedProduct)
+			        && NOT ISBLANK(_CoPurchaseProduct)
+			        && _SelectedProduct <> _CoPurchaseProduct,
+			        
+			    VAR _TransactionsWithProductA =
+			        CALCULATETABLE (
+			            VALUES ( 'Sales'[TransactionNumber] ),
+			            'Product'[Product Name] = _SelectedProduct
+			        )
+			
+			    VAR _TransactionsWithProductB =
+			        CALCULATETABLE (
+			            VALUES ( 'Sales'[TransactionNumber] ),
+			            TREATAS(
+			                { _CoPurchaseProduct },
+			                'Product'[Product Name]
+			            )
+			        )
+			
+			    VAR _Overlap =
+			        INTERSECT ( _TransactionsWithProductA, _TransactionsWithProductB )
+			
+			    RETURN
+			        COUNTROWS ( _Overlap )
+			)
+			
+			```
+		displayFolder: Sales & POS Performances
+		lineageTag: 651deb79-8845-587f-9b97-c000ac376d01
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'CoPurchase Count' = ```
+			
+			VAR ProductA =
+			    SELECTEDVALUE ( 'Product'[Product Name] )
+			
+			RETURN
+			CALCULATE (
+			    DISTINCTCOUNT ( 'Sales'[TransactionNumber] ),
+			    KEEPFILTERS ( 'Product'[Product Name] = ProductA )
+			)
+			
+			```
+		lineageTag: fa81e6c5-2486-5cbc-8a42-4bef241114fa
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Basket Transactions' =
+			
+			VAR TransactionsA =
+			    CALCULATETABLE(
+			        VALUES(Sales[TransactionNumber]),
+			        ALL(Product_Basket)
+			    )
+			
+			VAR TransactionsB =
+			    CALCULATETABLE(
+			        VALUES(Sales[TransactionNumber]),
+			        ALL(Product[Product Name]),
+			        TREATAS(
+			            VALUES(Product_Basket[ProductName]),
+			            Product[Product Name]
+			        )
+			    )
+			
+			RETURN
+			    COUNTROWS(
+			        INTERSECT(
+			            TransactionsA,
+			            TransactionsB
+			        )
+			    )
+		lineageTag: 958ea2ee-e717-574a-8006-73826557e63c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Test Transactions' =
+			
+			DISTINCTCOUNT(Sales[TransactionNumber])
+		lineageTag: 89d45225-7b58-5097-9820-a5a3e9c3948f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Column
+		formatString: 0
+		lineageTag: 0e0fc83c-4bcc-58fb-a60f-3874c98fc823
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Column]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = calculated
+		mode: import
+		source = Row("Column", BLANK())
+
+	annotation PBI_Id = e1d9cf1279f148a989a0605187f6500c
+
+	annotation b813f3b6-c046-582d-bc5c-9b944f5c1a48 = {"Expression":""}
+

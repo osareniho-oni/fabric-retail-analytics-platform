@@ -1,0 +1,261 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "235e8888-21cf-5fd2-a08f-9210a0848102",
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6",
+          "parameters": {
+            "p_MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Staging_Raw_Tables",
+        "description": "Preprocessing of raw ingested tables",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "2e2820c8-17f2-58e8-bdc2-0a13d3bc0aea",
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6",
+          "parameters": {
+            "p_MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Staging_Raw_Files",
+        "description": "Processing raw csv files to staging layer",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@json(activity('Staging_Raw_Files').output.result.exitValue)",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Script",
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "text": {
+                      "value": "EXEC dbo.sp_WritePipelineAudit\n    @MasterRunId  = '@{pipeline().parameters.p_MasterRunId}',\n    @ChildRunId   = '@{pipeline().RunId}',\n    @Layer        = '@{item().Layer}',\n    @SourceEntity = '@{item().SourceEntity}',\n    @TargetEntity = '@{item().TargetEntity}',\n    @RowsRead     = @{item().RowsRead},\n    @RowsWritten  = @{item().RowsWritten},\n    @Status       = '@{item().Status}';",
+                      "type": "Expression"
+                    },
+                    "type": "Query"
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              },
+              "linkedService": {
+                "name": "dw_gold",
+                "properties": {
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+                    "endpoint": "warehouse.example.invalid",
+                    "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+                  },
+                  "annotations": []
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Files_Script",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "ForEach_File",
+        "dependsOn": [
+          {
+            "activity": "Staging_Raw_Files",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Script",
+        "typeProperties": {
+          "scripts": [
+            {
+              "text": {
+                "value": "EXEC dbo.sp_WritePipelineAudit\n    @MasterRunId  = '@{pipeline().parameters.p_MasterRunId}',\n    @ChildRunId   = '@{pipeline().RunId}',\n    @Layer        = 'Silver',\n    @SourceEntity = 'Silver_Notebook_Batch',\n    @TargetEntity = 'Silver_Notebook_Batch',\n    @RowsRead     = NULL,\n    @RowsWritten  = NULL,\n    @Status       = 'Failed',\n    @ErrorMessage = '@{activity('Staging_Raw_Files').error.message}';",
+                "type": "Expression"
+              },
+              "type": "Query"
+            }
+          ],
+          "scriptBlockExecutionTimeout": "02:00:00"
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Files_Failure_Script",
+        "dependsOn": [
+          {
+            "activity": "Staging_Raw_Files",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@json(activity('Staging_Raw_Tables').output.result.exitValue)",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Script",
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "text": {
+                      "value": "EXEC dbo.sp_WritePipelineAudit\n    @MasterRunId  = '@{pipeline().parameters.p_MasterRunId}',\n    @ChildRunId   = '@{pipeline().RunId}',\n    @Layer        = '@{item().Layer}',\n    @SourceEntity = '@{item().SourceEntity}',\n    @TargetEntity = '@{item().TargetEntity}',\n    @RowsRead     = @{item().RowsRead},\n    @RowsWritten  = @{item().RowsWritten},\n    @Status       = '@{item().Status}';",
+                      "type": "Expression"
+                    },
+                    "type": "Query"
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              },
+              "linkedService": {
+                "name": "dw_gold",
+                "properties": {
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+                    "endpoint": "warehouse.example.invalid",
+                    "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+                  },
+                  "annotations": []
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Tables_Script",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "ForEach_Tables",
+        "dependsOn": [
+          {
+            "activity": "Staging_Raw_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Script",
+        "typeProperties": {
+          "scripts": [
+            {
+              "text": {
+                "value": "EXEC dbo.sp_WritePipelineAudit\n    @MasterRunId  = '@{pipeline().parameters.p_MasterRunId}',\n    @ChildRunId   = '@{pipeline().RunId}',\n    @Layer        = 'Silver',\n    @SourceEntity = 'Silver_Notebook_Batch',\n    @TargetEntity = 'Silver_Notebook_Batch',\n    @RowsRead     = NULL,\n    @RowsWritten  = NULL,\n    @Status       = 'Failed',\n    @ErrorMessage = '@{activity('Staging_Raw_Tables').error.message}';",
+                "type": "Expression"
+              },
+              "type": "Query"
+            }
+          ],
+          "scriptBlockExecutionTimeout": "02:00:00"
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Tables_Failure_Script",
+        "dependsOn": [
+          {
+            "activity": "Staging_Raw_Tables",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "p_MasterRunId": {
+        "type": "string"
+      }
+    }
+  }
+}

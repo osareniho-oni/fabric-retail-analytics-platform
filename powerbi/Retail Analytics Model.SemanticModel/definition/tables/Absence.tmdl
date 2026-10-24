@@ -1,0 +1,107 @@
+table Absence
+	lineageTag: 965b1881-a18e-5b65-a2b2-e294de14132d
+	sourceLineageTag: [fact].[Absence]
+
+	column AbsenceKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f64b5d63-9387-55bc-8fb4-2ac2b0b6c65b
+		sourceLineageTag: AbsenceKey
+		summarizeBy: none
+		sourceColumn: AbsenceKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 32ea3bf7-c432-5660-915c-c064d26e5264
+		sourceLineageTag: DateKey
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmployeeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 1aadb940-1801-56e7-bcfc-36b55f0f8755
+		sourceLineageTag: EmployeeKey
+		summarizeBy: none
+		sourceColumn: EmployeeKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 8903ae54-c61f-588d-8f61-8fbb500a1cf2
+		sourceLineageTag: StoreKey
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column AbsenceCategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 0c2f20fb-d077-5b07-bb37-8ee2b5793ab0
+		sourceLineageTag: AbsenceCategoryKey
+		summarizeBy: none
+		sourceColumn: AbsenceCategoryKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Absent Hours'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8d48222d-e2a6-5c17-add0-534a3186aea4
+		sourceLineageTag: AbsentHours
+		summarizeBy: none
+		sourceColumn: AbsentHours
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column 'Absence Count'
+		dataType: int64
+		formatString: 0
+		lineageTag: 899946a5-7d94-591e-bbb9-c6c38cc1f851
+		sourceLineageTag: AbsenceCount
+		summarizeBy: none
+		sourceColumn: AbsenceCount
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	partition Absence = entity
+		mode: directLake
+		source
+			entityName: Absence
+			schemaName: fact
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

@@ -1,0 +1,40 @@
+table 'Product Basket'
+	lineageTag: 0fb20489-b3bf-5fdd-91c7-41c40c0bfae7
+
+	calculationGroup
+		precedence: 3
+
+		calculationItem 'Product Basket Filter' = ```
+				
+				VAR _BasketProduct = 
+				    SELECTEDVALUE ( 'Product'[Product Name] )
+				
+				RETURN
+				    CALCULATE (
+				        SELECTEDMEASURE (),
+				        KEEPFILTERS ( 'Product'[Product Name] = _BasketProduct )
+				    )
+				
+				```
+
+	column 'Basket Product'
+		dataType: string
+		lineageTag: 1ac31960-f37c-52bb-9a7e-b9981a1cf68d
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		formatString: 0
+		lineageTag: 9af99c39-1f9d-5802-8db2-41dd4066cd29
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Product Basket' = calculationGroup
+		mode: import
+

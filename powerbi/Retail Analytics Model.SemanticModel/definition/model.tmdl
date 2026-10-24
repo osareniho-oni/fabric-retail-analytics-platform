@@ -1,0 +1,43 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["DirectLake - dw_gold","FinancialBridge"]
+
+annotation PBI_ProTooling = ["DirectLakeOnOneLakeInWeb","WebModelingEdit","CalcGroup","RemoteModeling","DaxQueryView_Desktop"]
+
+ref table Sales
+ref table Absence
+ref table Purchase
+ref table AbsentCategory
+ref table MisconductCategory
+ref table MisconductDecision
+ref table Misconduct
+ref table Date
+ref table Time
+ref table Overtime
+ref table Customer
+ref table Employee
+ref table POSChannel
+ref table Product
+ref table PipelineExecutionLog
+ref table Promotion
+ref table Store
+ref table Vendor
+ref table _Measures
+ref table 'Product Rebranding'
+ref table Product_Basket
+ref table POSDeviceChange
+ref table 'Time Intelligence'
+ref table FinancialBridge
+ref table 'Top N Selection'
+ref table Product_Baskets
+ref table 'Product Basket'
+

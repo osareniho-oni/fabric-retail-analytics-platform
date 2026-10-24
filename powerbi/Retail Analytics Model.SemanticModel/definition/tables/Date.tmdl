@@ -1,0 +1,204 @@
+table Date
+	lineageTag: b6e37274-bcbb-5a0d-a71d-7d6360131e0c
+	sourceLineageTag: [dim].[Date]
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e968efd2-ffae-55a6-8d64-fc3589afa34d
+		sourceLineageTag: DateKey
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Full Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5fa5e320-f2a6-5b87-b202-31749863e062
+		sourceLineageTag: FullDate
+		summarizeBy: none
+		sourceColumn: FullDate
+
+		changedProperty = DataType
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 14825bb6-ea54-5309-9f38-ebd9ea63f882
+		sourceLineageTag: Year
+		summarizeBy: none
+		sourceColumn: Year
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: d849844d-02d0-5ebe-8962-f505eca7816b
+		sourceLineageTag: Quarter
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column Month
+		dataType: int64
+		formatString: 0
+		lineageTag: aa7fdead-7c37-5ff3-aff5-ab4a99faa436
+		sourceLineageTag: Month
+		summarizeBy: none
+		sourceColumn: Month
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Month Name'
+		dataType: string
+		lineageTag: 32e2c08f-9e8d-5a83-8513-aaf0944d3cb7
+		sourceLineageTag: MonthName
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: Month
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: b1da2b64-e409-5fbb-abd9-857cb71b344d
+		sourceLineageTag: Day
+		summarizeBy: none
+		sourceColumn: Day
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Day Of Week'
+		dataType: int64
+		formatString: 0
+		lineageTag: b9f346d5-dee6-5d8f-85bc-d64a9ba32f46
+		sourceLineageTag: DayOfWeek
+		summarizeBy: none
+		sourceColumn: DayOfWeek
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Day Name'
+		dataType: string
+		lineageTag: 6f2d53ca-f325-546c-a9b9-1afc902e75e9
+		sourceLineageTag: DayName
+		summarizeBy: none
+		sourceColumn: DayName
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quarter Name'
+		dataType: string
+		lineageTag: 5b0a0f93-400f-5348-ae24-d357d7de20c5
+		sourceLineageTag: QuarterName
+		summarizeBy: none
+		sourceColumn: QuarterName
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Quarter'
+		dataType: string
+		lineageTag: 3c27f62f-9a8e-5244-8310-c15d787cbe15
+		sourceLineageTag: YearQuarter
+		summarizeBy: none
+		sourceColumn: YearQuarter
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Type'
+		dataType: string
+		lineageTag: 52f1cb7b-da8e-578e-9f6a-dfe8dca94f14
+		sourceLineageTag: DayType
+		summarizeBy: none
+		sourceColumn: DayType
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Calendar Hierarchy'
+		lineageTag: e40b8da8-db97-517e-b79b-c6cd1bf9e4d8
+
+		level Year
+			lineageTag: 9aa6a566-38b7-53fd-ba4c-7857cec2be06
+			column: Year
+
+		level Quarter
+			lineageTag: 2bcef57b-eb77-565a-adc5-b46144142f54
+			column: Quarter
+
+		level Month
+			lineageTag: 19aacf35-ee2d-5491-8b7e-750dc8f6c9ea
+			column: Month
+
+		level Day
+			lineageTag: 969ba20f-d5aa-5291-904a-cb0cb15e0cd3
+			column: Day
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+	partition Date = entity
+		mode: directLake
+		source
+			entityName: Date
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+

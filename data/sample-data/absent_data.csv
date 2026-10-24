@@ -1,0 +1,3 @@
+emp_id,store_id,absent_date,absent_hour,category_id,ingested_at,source_record_ordinal
+1,1,2025-01-15,8,1,2025-03-01 12:00:00,2
+1,1,2025-01-15,2,1,2025-03-01 12:00:00,1

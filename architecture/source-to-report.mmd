@@ -1,0 +1,16 @@
+flowchart TD
+    SQL[On-premises SQL Server] --> TC[Transaction Copy Job: snapshot plus incremental]
+    SQL --> RC[Reference Copy Job: full replacement]
+    HR[HR CSV files via FileServer] --> FC[HR Copy Job: file replacement per author]
+    TC --> BT[Bronze Lakehouse Tables]
+    RC --> BT
+    FC --> BF[Bronze Lakehouse Files]
+    BT --> TN[SQL-table staging notebook]
+    BF --> FN[HR-file staging notebook]
+    TN --> S[Silver Lakehouse staging tables]
+    FN --> S
+    S --> SP[T-SQL stored procedures]
+    SP --> W[Gold dimensions and facts within Warehouse]
+    D[Power Query calendar dataflow] --> W
+    W --> M[Semantic model and DAX]
+    M --> P[Power BI reports]

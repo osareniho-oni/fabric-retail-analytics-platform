@@ -1,0 +1,147 @@
+table Vendor
+	lineageTag: a9f691dc-00b0-5bc3-b71c-e7911a22dcc1
+	sourceLineageTag: [dim].[Vendor]
+
+	column VendorKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 0d304f33-81e5-5725-a81e-63b00f8801eb
+		sourceLineageTag: VendorKey
+		summarizeBy: none
+		sourceColumn: VendorKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column VendorID
+		dataType: int64
+		formatString: 0
+		lineageTag: eda732bb-4c65-574a-a9e1-84dba91309da
+		sourceLineageTag: VendorID
+		summarizeBy: none
+		sourceColumn: VendorID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vendor Number'
+		dataType: string
+		lineageTag: c924178a-ab09-5e59-9d92-39ad116fe681
+		sourceLineageTag: VendorNumber
+		summarizeBy: none
+		sourceColumn: VendorNumber
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vendor Name'
+		dataType: string
+		lineageTag: 0ac27748-83d7-5c55-9bf1-b5619136ae88
+		sourceLineageTag: VendorName
+		summarizeBy: none
+		sourceColumn: VendorName
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Registration Number'
+		dataType: string
+		lineageTag: 9c33b3c8-5728-5b6d-860f-64e57d7bf363
+		sourceLineageTag: RegistrationNumber
+		summarizeBy: none
+		sourceColumn: RegistrationNumber
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vendor Address'
+		dataType: string
+		lineageTag: bb9f96a0-6f73-5135-8ff7-e72287daebf0
+		sourceLineageTag: VendorAddress
+		summarizeBy: none
+		sourceColumn: VendorAddress
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 2e18b4b7-a467-504c-a86e-08b597e548a0
+		sourceLineageTag: City
+		summarizeBy: none
+		sourceColumn: City
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: d5db1a0b-5ffc-55ec-9145-b9de60765a36
+		sourceLineageTag: State
+		summarizeBy: none
+		sourceColumn: State
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidFrom
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 38650e17-e76b-5c19-bf56-d65c3c2e2fd5
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 6ade3792-71f6-539a-bb23-6b44bcdaa2be
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsCurrent
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 695ae221-64be-585e-b9ca-f122b3858d16
+		sourceLineageTag: IsCurrent
+		summarizeBy: none
+		sourceColumn: IsCurrent
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Vendor = entity
+		mode: directLake
+		source
+			entityName: Vendor
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

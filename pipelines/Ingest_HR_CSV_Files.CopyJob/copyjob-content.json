@@ -1,0 +1,709 @@
+{
+  "properties": {
+    "jobMode": "Batch",
+    "source": {
+      "type": "DelimitedText",
+      "connectionSettings": {
+        "type": "FileServer",
+        "externalReferences": {
+          "connection": "0a92b98b-562b-5ce0-9246-a386de2f0da3"
+        }
+      }
+    },
+    "destination": {
+      "type": "DelimitedText",
+      "connectionSettings": {
+        "type": "Lakehouse",
+        "typeProperties": {
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6",
+          "artifactId": "6d9ee20d-138b-59bd-b0aa-4f6c3b2df807",
+          "rootFolder": "Files"
+        }
+      }
+    },
+    "policy": {
+      "timeout": "0.12:00:00",
+      "retry": 0
+    }
+  },
+  "activities": [
+    {
+      "id": "3087a521-2297-511b-a900-1faf306ceda8",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "location": {
+              "type": "FileServerLocation",
+              "fileName": "absent_category.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "recursive": true,
+            "enablePartitionDiscovery": false
+          },
+          "formatSettings": {}
+        },
+        "destination": {
+          "datasetSettings": {
+            "location": {
+              "type": "LakehouseLocation",
+              "fileName": "absent_category.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "copyBehavior": "FlattenHierarchy"
+          },
+          "formatSettings": {
+            "fileExtension": ".csv"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "categoryid",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "categoryid",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "category",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "category",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "type": "String",
+                "physicalType": "String"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fe2ff36a-ef73-5143-bcb9-a01b7258a5ea",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "location": {
+              "type": "FileServerLocation",
+              "fileName": "absent_data.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "recursive": true,
+            "enablePartitionDiscovery": false
+          },
+          "formatSettings": {}
+        },
+        "destination": {
+          "datasetSettings": {
+            "location": {
+              "type": "LakehouseLocation",
+              "fileName": "absent_data.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "copyBehavior": "FlattenHierarchy"
+          },
+          "formatSettings": {
+            "fileExtension": ".csv"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "empid",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "empid",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "store",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "store",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "absent_date",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "absent_date",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "absent_hour",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "absent_hour",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "absent_category",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "absent_category",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "type": "String",
+                "physicalType": "String"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "4aae2ed3-750e-52cb-a1bd-6c67fb0934c9",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "location": {
+              "type": "FileServerLocation",
+              "fileName": "hr_misconduct.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "recursive": true,
+            "enablePartitionDiscovery": false
+          },
+          "formatSettings": {}
+        },
+        "destination": {
+          "datasetSettings": {
+            "location": {
+              "type": "LakehouseLocation",
+              "fileName": "misconduct_category.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "copyBehavior": "FlattenHierarchy"
+          },
+          "formatSettings": {
+            "fileExtension": ".csv"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "misconductid",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "misconductid",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "miscoductdesc",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "miscoductdesc",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "type": "String",
+                "physicalType": "String"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "c453436c-cee5-57f9-b603-2c5f82297873",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "location": {
+              "type": "FileServerLocation",
+              "fileName": "hr_misconduct_decision.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "recursive": true,
+            "enablePartitionDiscovery": false
+          },
+          "formatSettings": {}
+        },
+        "destination": {
+          "datasetSettings": {
+            "location": {
+              "type": "LakehouseLocation",
+              "fileName": "misconduct_decision.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "copyBehavior": "FlattenHierarchy"
+          },
+          "formatSettings": {
+            "fileExtension": ".csv"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "decision_id",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "decision_id",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "decision",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "decision",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "type": "String",
+                "physicalType": "String"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "2bb9f86a-96ab-597a-bab7-31a21e41e53d",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "location": {
+              "type": "FileServerLocation",
+              "fileName": "misconduct_trans.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "recursive": true,
+            "enablePartitionDiscovery": false
+          },
+          "formatSettings": {}
+        },
+        "destination": {
+          "datasetSettings": {
+            "location": {
+              "type": "LakehouseLocation",
+              "fileName": "misconduct_trans.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "copyBehavior": "FlattenHierarchy"
+          },
+          "formatSettings": {
+            "fileExtension": ".csv"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "empid",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "empid",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "storeid",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "storeid",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "misconduct_date",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "misconduct_date",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "misconduct_id",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "misconduct_id",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "decision_id",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "decision_id",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "type": "String",
+                "physicalType": "String"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "9097cf4d-256a-5a59-9865-94f3e5540dfa",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "location": {
+              "type": "FileServerLocation",
+              "fileName": "OvertimeData.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "recursive": true,
+            "enablePartitionDiscovery": false
+          },
+          "formatSettings": {}
+        },
+        "destination": {
+          "datasetSettings": {
+            "location": {
+              "type": "LakehouseLocation",
+              "fileName": "overtime_data.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+          },
+          "storeSettings": {
+            "copyBehavior": "FlattenHierarchy"
+          },
+          "formatSettings": {
+            "fileExtension": ".csv"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "OvertimeID",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "OvertimeID",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "EmployeeNo",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "EmployeeNo",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "FirstName",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "FirstName",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "LastName",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "LastName",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "StartOvertime",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "StartOvertime",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "EndOvertime",
+                "type": "String",
+                "physicalType": "String"
+              },
+              "destination": {
+                "name": "EndOvertime",
+                "type": "String",
+                "physicalType": "String"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "type": "String",
+                "physicalType": "String"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+table Store
+	lineageTag: 5157eec3-63e7-55da-b288-cc58a1263b4c
+	sourceLineageTag: [dim].[Store]
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b799f152-0642-59f9-9904-264f327fd3cf
+		sourceLineageTag: StoreKey
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreID
+		dataType: int64
+		formatString: 0
+		lineageTag: 79a2b4c4-07d2-5bd2-aed9-3ea47d59e462
+		sourceLineageTag: StoreID
+		summarizeBy: none
+		sourceColumn: StoreID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Store Name'
+		dataType: string
+		lineageTag: 045794c1-f69e-5c61-aedd-4f7cc47e1656
+		sourceLineageTag: StoreName
+		summarizeBy: none
+		sourceColumn: StoreName
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Street Address'
+		dataType: string
+		lineageTag: 82026c38-a715-53cd-8811-eb9a9054399d
+		sourceLineageTag: StreetAddress
+		summarizeBy: none
+		sourceColumn: StreetAddress
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 12598d04-3176-590a-8bd8-c1f7817dd1a5
+		sourceLineageTag: City
+		summarizeBy: none
+		sourceColumn: City
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: 55f69c98-1334-534b-a647-40ae5f3e65e8
+		sourceLineageTag: State
+		summarizeBy: none
+		sourceColumn: State
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidFrom
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7a44c7e8-ed37-5677-acc2-b93db0369ced
+		sourceLineageTag: ValidFrom
+		summarizeBy: none
+		sourceColumn: ValidFrom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValidTo
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e607b997-bedb-5737-a7ca-5a0376df2ede
+		sourceLineageTag: ValidTo
+		summarizeBy: none
+		sourceColumn: ValidTo
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsCurrent
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 141dfeb4-81ba-5352-99e1-7df97ced9c6d
+		sourceLineageTag: IsCurrent
+		summarizeBy: none
+		sourceColumn: IsCurrent
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Store = entity
+		mode: directLake
+		source
+			entityName: Store
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

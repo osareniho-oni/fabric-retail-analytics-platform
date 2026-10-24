@@ -1,0 +1,46 @@
+table Product_Basket
+	lineageTag: 24407911-5522-5054-a689-2b0d873e435e
+	sourceLineageTag: [dim].[Product_Basket]
+
+	column ProductName
+		dataType: string
+		lineageTag: 95d63b68-c542-5d83-8497-7add33495bb7
+		sourceLineageTag: ProductName
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductNumber
+		dataType: string
+		lineageTag: 80969da4-c788-52ee-bd32-1644c979e815
+		sourceLineageTag: ProductNumber
+		summarizeBy: none
+		sourceColumn: ProductNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Department
+		dataType: string
+		lineageTag: 95b9afa3-6adc-5ab4-9198-7c48a44affff
+		sourceLineageTag: Department
+		summarizeBy: none
+		sourceColumn: Department
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Product_Basket = entity
+		mode: directLake
+		source
+			entityName: Product_Basket
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

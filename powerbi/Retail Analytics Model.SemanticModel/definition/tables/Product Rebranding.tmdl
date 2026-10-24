@@ -1,0 +1,68 @@
+table 'Product Rebranding'
+	lineageTag: ee74b1ba-9d60-5a31-af2c-89513c11a798
+
+	calculationGroup
+		precedence: 1
+
+		calculationItem 'All Sales' = SELECTEDMEASURE()
+
+		calculationItem 'Pre-Rebrand Sales' = ```
+				CALCULATE(
+				    SELECTEDMEASURE(),
+				    KEEPFILTERS(Product[IsCurrent] = TRUE()),
+				    KEEPFILTERS(Product[IsRebranded] = FALSE())
+				)
+				
+				```
+
+		calculationItem 'Post-Rebrand Sales' = ```
+				
+				CALCULATE(
+				    SELECTEDMEASURE(),
+				    KEEPFILTERS(Product[IsCurrent] = TRUE()),
+				    KEEPFILTERS(Product[IsRebranded] = TRUE())
+				)
+				
+				```
+
+		calculationItem 'Rebranding Impact' = ```
+				
+				VAR _Post =
+				    CALCULATE(
+				        SELECTEDMEASURE(),
+				        KEEPFILTERS('Product'[IsCurrent] = TRUE()),
+				        KEEPFILTERS('Product'[IsRebranded] = TRUE())
+				    )
+				
+				VAR _Pre =
+				    CALCULATE(
+				        SELECTEDMEASURE(),
+				        KEEPFILTERS('Product'[IsCurrent] = TRUE()),
+				        KEEPFILTERS('Product'[IsRebranded] = FALSE())
+				    )
+				
+				RETURN _Post - _Pre
+				
+				```
+
+	column 'Rebranding Calculation'
+		dataType: string
+		lineageTag: e3cef285-a8eb-5557-acba-4f6a27f77455
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		formatString: 0
+		lineageTag: 9e34699f-8d47-571e-ade8-7c725de61c05
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Product Rebranding' = calculationGroup
+		mode: import
+

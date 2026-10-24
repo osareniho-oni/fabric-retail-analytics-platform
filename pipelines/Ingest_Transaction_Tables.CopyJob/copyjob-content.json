@@ -1,0 +1,465 @@
+{
+  "properties": {
+    "jobMode": "CDC",
+    "fullLoadBehavior": "Truncate",
+    "source": {
+      "type": "SqlServerTable",
+      "connectionSettings": {
+        "type": "SqlServer",
+        "typeProperties": {
+          "database": "retail_demo_oltp"
+        },
+        "externalReferences": {
+          "connection": "5c1cb3d0-fc86-5c4c-b753-2ddda0730965"
+        }
+      }
+    },
+    "destination": {
+      "type": "LakehouseTable",
+      "connectionSettings": {
+        "type": "Lakehouse",
+        "typeProperties": {
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6",
+          "artifactId": "6d9ee20d-138b-59bd-b0aa-4f6c3b2df807",
+          "rootFolder": "Tables"
+        }
+      }
+    },
+    "policy": {
+      "timeout": "0.12:00:00",
+      "retry": 0
+    }
+  },
+  "activities": [
+    {
+      "id": "e2e5a152-bd66-508d-90a1-47931be4ec04",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "PurchaseTransaction"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "TransactionID",
+                "type": "Int32",
+                "physicalType": "int"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "PurchaseTransaction"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "TransactionID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "TransactionID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "TransactionNO",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "TransactionNO",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "TransDate",
+                "type": "DateTime",
+                "physicalType": "datetime"
+              },
+              "destination": {
+                "name": "TransDate",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "OrderDate",
+                "type": "DateTime",
+                "physicalType": "datetime"
+              },
+              "destination": {
+                "name": "OrderDate",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "DeliveryDate",
+                "type": "DateTime",
+                "physicalType": "datetime"
+              },
+              "destination": {
+                "name": "DeliveryDate",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "ShipDate",
+                "type": "DateTime",
+                "physicalType": "datetime"
+              },
+              "destination": {
+                "name": "ShipDate",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "VendorID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "VendorID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "EmployeeID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "EmployeeID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ProductID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ProductID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "StoreID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "StoreID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "Quantity",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "Quantity",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "TaxAmount",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "TaxAmount",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "LineAmount",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "LineAmount",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    },
+    {
+      "id": "9aa14018-3190-5513-9654-bd72292eaded",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "SalesTransaction"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "TransactionID",
+                "type": "Int32",
+                "physicalType": "int"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "SalesTransaction"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "TransactionID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "TransactionID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "TransactionNO",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "50"
+              },
+              "destination": {
+                "name": "TransactionNO",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "TransDate",
+                "type": "DateTime",
+                "physicalType": "datetime"
+              },
+              "destination": {
+                "name": "TransDate",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "OrderDate",
+                "type": "DateTime",
+                "physicalType": "datetime"
+              },
+              "destination": {
+                "name": "OrderDate",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "DeliveryDate",
+                "type": "DateTime",
+                "physicalType": "datetime"
+              },
+              "destination": {
+                "name": "DeliveryDate",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "ChannelID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ChannelID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "CustomerID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "CustomerID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "EmployeeID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "EmployeeID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ProductID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ProductID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "StoreID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "StoreID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "PromotionID",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "PromotionID",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "Quantity",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "Quantity",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "TaxAmount",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "TaxAmount",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "LineAmount",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "LineAmount",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "LineDiscountAmount",
+                "type": "Double",
+                "physicalType": "float"
+              },
+              "destination": {
+                "name": "LineDiscountAmount",
+                "physicalType": "double"
+              }
+            },
+            {
+              "source": {
+                "name": "ingested_at",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ingested_at",
+                "physicalType": "timestamp"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ingested_at",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    }
+  ]
+}

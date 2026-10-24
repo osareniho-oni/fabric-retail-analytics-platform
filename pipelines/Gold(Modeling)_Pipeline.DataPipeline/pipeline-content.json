@@ -1,0 +1,886 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimAbsentCategory]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_AbsentCategory",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimCustomer_SCD2]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_Customer",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimEmployee_SCD2]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_Employee",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimMisconductCategory]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_MisconductCategory",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimMisconductDecision]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_MisconductDecision",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimPOSChannel_SCD2]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_POSChannel",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimProduct_SCD2]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_Product",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimPromotion]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_Promotion",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimStore_SCD2]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_Store",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadDimVendor_SCD2]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_Vendor",
+        "dependsOn": []
+      },
+      {
+        "type": "Wait",
+        "typeProperties": {
+          "waitTimeInSeconds": 1
+        },
+        "name": "Wait1",
+        "dependsOn": [
+          {
+            "activity": "Dim_Customer",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_Employee",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_MisconductCategory",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_MisconductDecision",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_POSChannel",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_AbsentCategory",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_Product",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_Promotion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_Store",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Dim_Vendor",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Script1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadFactSales]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Sales_Fact",
+        "dependsOn": [
+          {
+            "activity": "Wait1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadFactPurchase]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Purchase_Fact",
+        "dependsOn": [
+          {
+            "activity": "Sales_Fact",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadFactAbsence]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Absence_Fact",
+        "dependsOn": [
+          {
+            "activity": "Overtime_Fact",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadFactMisconduct]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Misconduct_Fact",
+        "dependsOn": [
+          {
+            "activity": "Absence_Fact",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadFactOvertime]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Overtime_Fact",
+        "dependsOn": [
+          {
+            "activity": "Purchase_Fact",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "RefreshDataflow",
+        "typeProperties": {
+          "dataflowId": "6d5fd5ea-ad3b-5cba-ac9e-7d333ba2a7f2",
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Dim_Date",
+        "dependsOn": []
+      },
+      {
+        "type": "Script",
+        "typeProperties": {
+          "scripts": [
+            {
+              "text": {
+                "value": "DECLARE @MaxYear INT;\nDECLARE @CurrentYear INT = YEAR(GETDATE());\n\n-- Check the highest year currently in the dimension\nSELECT @MaxYear = MAX(Year)\nFROM dim.Date;\n\n-- Only rebuild if the dimension is missing the current year\nIF @MaxYear < @CurrentYear\nBEGIN\n    PRINT 'Updating Date Dimension...';\n\n    -- FK-safe delete\n    DELETE FROM dim.Date;\n\n    -- Reload from staging (dbo.Date)\n    INSERT INTO dim.Date (\n        DateKey,\n        FullDate,\n        Year,\n        Quarter,\n        Month,\n        MonthName,\n        Day,\n        DayOfWeek,\n        DayName,\n        QuarterName,\n        YearQuarter,\n        DayType\n    )\n    SELECT\n        DateKey,\n        FullDate,\n        Year,\n        Quarter,\n        Month,\n        MonthName,\n        Day,\n        DayOfWeek,\n        DayName,\n        QuarterName,\n        YearQuarter,\n        DayType\n    FROM dbo.Date;\n\n    PRINT 'Date Dimension updated successfully.';\nEND\nELSE\nBEGIN\n    PRINT 'Date Dimension already up to date. No action taken.';\nEND;\n",
+                "type": "Expression"
+              },
+              "type": "Query"
+            }
+          ],
+          "scriptBlockExecutionTimeout": "02:00:00"
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Script1",
+        "dependsOn": [
+          {
+            "activity": "Dim_Date",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[sp_LoadFactPOSDeviceChange]",
+          "storedProcedureParameters": {
+            "ChildRunId": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "MasterRunId": {
+              "value": {
+                "value": "@pipeline().parameters.p_MasterRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            }
+          }
+        },
+        "linkedService": {
+          "name": "dw_gold",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+              "endpoint": "warehouse.example.invalid",
+              "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "POSDeviceChange_Fact",
+        "dependsOn": [
+          {
+            "activity": "Misconduct_Fact",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "p_MasterRunId": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "FailedActivityName": {
+        "type": "String"
+      },
+      "FailedErrorMessage": {
+        "type": "String"
+      }
+    }
+  }
+}

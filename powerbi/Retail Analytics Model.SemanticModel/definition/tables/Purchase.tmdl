@@ -1,0 +1,208 @@
+table Purchase
+	lineageTag: c2096a7e-9312-5ecd-984e-0f50bc4d41b4
+	sourceLineageTag: [fact].[Purchase]
+
+	column PurchaseKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c696ebb-2da5-5896-bbf6-90c95542f207
+		sourceLineageTag: PurchaseKey
+		summarizeBy: none
+		sourceColumn: PurchaseKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column TransactionNumber
+		dataType: string
+		lineageTag: 48799180-925e-5578-9e62-ebb457755170
+		sourceLineageTag: TransactionNumber
+		summarizeBy: none
+		sourceColumn: TransactionNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column TransactionDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: a0d29914-c99f-5447-a242-6d17286d0e5b
+		sourceLineageTag: TransactionDateKey
+		summarizeBy: none
+		sourceColumn: TransactionDateKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column OrderDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 9c1ceea7-5795-54c3-bb4c-e4418ef74a8c
+		sourceLineageTag: OrderDateKey
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column DeliveryDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 99498c36-7955-5458-b6c5-69b5f83e9839
+		sourceLineageTag: DeliveryDateKey
+		summarizeBy: count
+		sourceColumn: DeliveryDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 5844ea8d-621f-5bb4-a88f-6668c69cb0a5
+		sourceLineageTag: ShipDateKey
+		summarizeBy: none
+		sourceColumn: ShipDateKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column VendorKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f9750cad-6056-55a9-8df1-00e266aaaea5
+		sourceLineageTag: VendorKey
+		summarizeBy: none
+		sourceColumn: VendorKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmployeeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 981ef696-e7c7-57c4-b334-05f0c534988b
+		sourceLineageTag: EmployeeKey
+		summarizeBy: none
+		sourceColumn: EmployeeKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: edfff898-6572-5969-aecc-b38d9cb8df82
+		sourceLineageTag: ProductKey
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e0181f58-2d97-5dc3-a9ea-7e5ccd274b03
+		sourceLineageTag: StoreKey
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 310fe0ae-8886-5071-b10e-b43e3fa9ae4f
+		sourceLineageTag: Quantity
+		summarizeBy: none
+		sourceColumn: Quantity
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Tax Amount'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: e7e3f6cd-5e15-5096-aaf4-0388285172cf
+		sourceLineageTag: TaxAmount
+		summarizeBy: none
+		sourceColumn: TaxAmount
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Line Amount'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 6b1d80fb-1b66-549a-b7ff-e8c44cb96425
+		sourceLineageTag: LineAmount
+		summarizeBy: none
+		sourceColumn: LineAmount
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column TransactionID
+		dataType: int64
+		formatString: 0
+		lineageTag: 091cb882-2b74-5457-a72e-14aaac675d98
+		sourceLineageTag: TransactionID
+		summarizeBy: none
+		sourceColumn: TransactionID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	partition Purchase = entity
+		mode: directLake
+		source
+			entityName: Purchase
+			schemaName: fact
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

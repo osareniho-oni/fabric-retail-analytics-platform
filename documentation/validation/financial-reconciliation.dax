@@ -1,0 +1,42 @@
+// PROPOSED READ-ONLY CHECKS. Not executed. Uses inspected model names.
+// First record the actual page context; these queries deliberately clear calculation groups.
+EVALUATE
+CALCULATETABLE(
+    ROW(
+        "Net Revenue", [Net Revenue],
+        "Purchase Spend Default Date Role", [Production Cost],
+        "Purchased Units", [Purchased Quantity],
+        "Sold Units", [Total Quantity Sold],
+        "Average Purchase Unit Cost", [Average Unit Cost],
+        "Purchase Spend Order Year", CALCULATE(
+            [Production Cost], REMOVEFILTERS('Date'),
+            Purchase[OrderDateKey] >= 20190101, Purchase[OrderDateKey] <= 20191231),
+        "COGS Existing Formula", [COGS],
+        "COGS Summed By Business Product", SUMX(VALUES(Product[ProductID]), [COGS]),
+        "Gross Profit", [Gross Profit],
+        "Implied COGS", [Net Revenue] - [Gross Profit],
+        "Margin", [Gross Profit Margin %]
+    ),
+    REMOVEFILTERS('Time Intelligence'),
+    REMOVEFILTERS('Product Rebranding'),
+    REMOVEFILTERS('Product Basket'),
+    TREATAS({2019}, 'Date'[Year])
+)
+
+EVALUATE
+CALCULATETABLE(
+    SUMMARIZECOLUMNS(
+        Product[ProductID],
+        "Sold Units", [Total Quantity Sold],
+        "Net Revenue", [Net Revenue],
+        "Purchase Spend", [Production Cost],
+        "Purchased Units", [Purchased Quantity],
+        "Average Unit Cost", [Average Unit Cost],
+        "COGS", [COGS]
+    ),
+    REMOVEFILTERS('Time Intelligence'),
+    REMOVEFILTERS('Product Rebranding'),
+    REMOVEFILTERS('Product Basket'),
+    TREATAS({2019}, 'Date'[Year])
+)
+ORDER BY Product[ProductID]

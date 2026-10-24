@@ -1,0 +1,140 @@
+relationship 93e03fcf-7ab0-5f1d-9f24-e52f4b384660
+	fromColumn: Sales.ChannelKey
+	toColumn: POSChannel.ChannelKey
+
+relationship 390ffed5-87d5-5f88-9a31-d66ba914a91e
+	fromColumn: Sales.CustomerKey
+	toColumn: Customer.CustomerKey
+
+relationship a27103f8-57c2-5da5-be71-603a72459911
+	isActive: false
+	fromColumn: Sales.DeliveryDateKey
+	toColumn: Date.DateKey
+
+relationship c804986f-6825-5476-8213-47881eab98f0
+	fromColumn: Sales.EmployeeKey
+	toColumn: Employee.EmployeeKey
+
+relationship 9bd3de03-efc6-515e-afb3-ff10dc3e89fc
+	fromColumn: Sales.PromotionKey
+	toColumn: Promotion.PromotionKey
+
+relationship c7f30818-7770-5215-af56-2a4398f9876c
+	fromColumn: Sales.TransactionHourKey
+	toColumn: Time.TimeKey
+
+relationship e3507169-7f64-585b-a706-89d2d3fb2eb7
+	fromColumn: Sales.StoreKey
+	toColumn: Store.StoreKey
+
+relationship 697a30a3-8649-52af-a66a-5441d9fbf0f6
+	isActive: false
+	fromColumn: Sales.OrderDateKey
+	toColumn: Date.DateKey
+
+relationship 20452291-373e-5250-8ccf-caa4470a96ee
+	fromColumn: Sales.TransactionDateKey
+	toColumn: Date.DateKey
+
+relationship 19563ad4-62f2-54d5-bc4b-a0ed1e6a0539
+	isActive: false
+	fromColumn: Sales.OrderHourKey
+	toColumn: Time.TimeKey
+
+relationship a374b67b-bee4-54b7-aea9-a6346f4f170c
+	isActive: false
+	fromColumn: Purchase.DeliveryDateKey
+	toColumn: Date.DateKey
+
+relationship 3454cbcf-f1b2-529f-a0e8-ff7b8bf0e9ce
+	isActive: false
+	fromColumn: Purchase.OrderDateKey
+	toColumn: Date.DateKey
+
+relationship 1a80cdea-8c28-5534-a063-213fdf71971f
+	isActive: false
+	fromColumn: Purchase.ShipDateKey
+	toColumn: Date.DateKey
+
+relationship a80e1f93-c735-51b3-8024-68734049fd69
+	fromColumn: Purchase.TransactionDateKey
+	toColumn: Date.DateKey
+
+relationship d6e00249-792b-5a8d-8448-f8ad5ac9c6e4
+	fromColumn: Purchase.EmployeeKey
+	toColumn: Employee.EmployeeKey
+
+relationship e91947f6-cbfb-5d73-a0b0-7fc4c2679249
+	fromColumn: Purchase.StoreKey
+	toColumn: Store.StoreKey
+
+relationship 304db036-f390-5eac-a34a-3f6170c31093
+	fromColumn: Purchase.VendorKey
+	toColumn: Vendor.VendorKey
+
+relationship a8c2877f-6bb0-51a7-913f-b8f44c13dbe8
+	fromColumn: Sales.ProductKey
+	toColumn: Product.ProductKey
+
+relationship 9e85f207-3b5a-5539-b5e2-350b79e2dade
+	fromColumn: Purchase.ProductKey
+	toColumn: Product.ProductKey
+
+relationship 0b45c241-ce6d-5c0a-b466-00f00f9dae30
+	fromColumn: Overtime.EmployeeKey
+	toColumn: Employee.EmployeeKey
+
+relationship 60cc8457-23f6-5f0c-a673-671a9bf240a4
+	fromColumn: Overtime.StartDateKey
+	toColumn: Date.DateKey
+
+relationship 79edbb5b-4de8-5dc1-a182-0ee44ad31f53
+	isActive: false
+	fromColumn: Overtime.EndDateKey
+	toColumn: Date.DateKey
+
+relationship f24986ee-96e8-5e83-b61b-94afdad58b91
+	fromColumn: Overtime.StartHourKey
+	toColumn: Time.TimeKey
+
+relationship d558a17a-95ec-5e31-a569-afd481457347
+	isActive: false
+	fromColumn: Overtime.EndHourKey
+	toColumn: Time.TimeKey
+
+relationship 1deb4518-402e-5e32-929a-246df70cb646
+	fromColumn: Misconduct.DecisionKey
+	toColumn: MisconductDecision.DecisionKey
+
+relationship 482399ad-abef-512a-9a5c-9cfafa8fed95
+	fromColumn: Misconduct.EmployeeKey
+	toColumn: Employee.EmployeeKey
+
+relationship f615eaed-5d42-5900-add6-b280630eeb07
+	fromColumn: Misconduct.MisconductCategoryKey
+	toColumn: MisconductCategory.CategoryKey
+
+relationship ec91d3ca-1383-5a1e-8c03-46702605c556
+	fromColumn: Misconduct.StoreKey
+	toColumn: Store.StoreKey
+
+relationship 29d29549-2c6f-566c-86c9-8d9d65dcaa35
+	fromColumn: Misconduct.DateKey
+	toColumn: Date.DateKey
+
+relationship 4ac9f890-41d2-5c7c-b754-be03ded2ad4d
+	fromColumn: Absence.AbsenceCategoryKey
+	toColumn: AbsentCategory.CategoryKey
+
+relationship 9881b897-6e9c-5d15-976b-1403b3057954
+	fromColumn: Absence.DateKey
+	toColumn: Date.DateKey
+
+relationship 614e571f-906e-52f5-b955-b3a7b165309c
+	fromColumn: Absence.EmployeeKey
+	toColumn: Employee.EmployeeKey
+
+relationship bb5c5831-c26c-5fa8-af9a-3ee869df93d9
+	fromColumn: Absence.StoreKey
+	toColumn: Store.StoreKey
+

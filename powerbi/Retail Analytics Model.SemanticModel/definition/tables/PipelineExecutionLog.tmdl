@@ -1,0 +1,160 @@
+table PipelineExecutionLog
+	lineageTag: 5cac736a-2575-5593-b976-4371c0b5a209
+	sourceLineageTag: [dbo].[PipelineExecutionLog]
+
+	column 'Audit Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: 4c155b48-a7cc-57da-a5d2-9dff6f6d5877
+		sourceLineageTag: AuditId
+		summarizeBy: none
+		sourceColumn: AuditId
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Master Run Id'
+		dataType: string
+		lineageTag: 60a77aa5-2d22-572f-88b9-0544fa459b07
+		sourceLineageTag: MasterRunId
+		summarizeBy: none
+		sourceColumn: MasterRunId
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Child Run Id'
+		dataType: string
+		lineageTag: 3af35d3a-23fa-5e75-838e-6edeec202264
+		sourceLineageTag: ChildRunId
+		summarizeBy: none
+		sourceColumn: ChildRunId
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Layer
+		dataType: string
+		lineageTag: 4304e3b9-c806-5b0f-a005-8685a308628b
+		sourceLineageTag: Layer
+		summarizeBy: none
+		sourceColumn: Layer
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Source Entity'
+		dataType: string
+		lineageTag: dc996b58-b02a-5e7b-85e9-c05008a9b265
+		sourceLineageTag: SourceEntity
+		summarizeBy: none
+		sourceColumn: SourceEntity
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Target Entity'
+		dataType: string
+		lineageTag: 82aad136-1852-5e08-a0af-0e4844c539c3
+		sourceLineageTag: TargetEntity
+		summarizeBy: none
+		sourceColumn: TargetEntity
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Rows Read'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7e181b43-982e-544c-9faa-3c504698ec5d
+		sourceLineageTag: RowsRead
+		summarizeBy: none
+		sourceColumn: RowsRead
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Rows Written'
+		dataType: int64
+		formatString: 0
+		lineageTag: 97dbc171-f1c8-5124-8ae2-3e53b5e86932
+		sourceLineageTag: RowsWritten
+		summarizeBy: none
+		sourceColumn: RowsWritten
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column Status
+		dataType: string
+		lineageTag: e96178a6-7ed7-5300-b54e-50d7905b66b7
+		sourceLineageTag: Status
+		summarizeBy: none
+		sourceColumn: Status
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Error Message'
+		dataType: string
+		lineageTag: 6329f74a-a54f-5760-9ae7-3b10c439b07d
+		sourceLineageTag: ErrorMessage
+		summarizeBy: none
+		sourceColumn: ErrorMessage
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Log Time'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: dd11885c-f640-58a3-beb2-ada26bb36d77
+		sourceLineageTag: LogTime
+		summarizeBy: none
+		sourceColumn: LogTime
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition PipelineExecutionLog = entity
+		mode: directLake
+		source
+			entityName: PipelineExecutionLog
+			schemaName: dbo
+			expressionSource: 'DirectLake - dw_gold'
+

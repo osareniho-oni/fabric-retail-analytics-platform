@@ -1,0 +1,123 @@
+table Overtime
+	lineageTag: 709616f6-9907-5120-982e-a1c77f21d734
+	sourceLineageTag: [fact].[Overtime]
+
+	column OvertimeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 9facd10b-4b79-53e9-a09d-cfe2b566c986
+		sourceLineageTag: OvertimeKey
+		summarizeBy: none
+		sourceColumn: OvertimeKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column OvertimeID
+		dataType: int64
+		formatString: 0
+		lineageTag: 6583e716-a24a-5480-a7f4-af76b9c2512a
+		sourceLineageTag: OvertimeID
+		summarizeBy: none
+		sourceColumn: OvertimeID
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column StartDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 5486399d-11e4-55e4-810a-7cf6869ac364
+		sourceLineageTag: StartDateKey
+		summarizeBy: none
+		sourceColumn: StartDateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StartHourKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 93e0f7c0-15ae-5ae5-b746-f38a22ca6224
+		sourceLineageTag: StartHourKey
+		summarizeBy: none
+		sourceColumn: StartHourKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EndDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e1c91ccc-831b-56b0-838c-2aef4d9621c8
+		sourceLineageTag: EndDateKey
+		summarizeBy: none
+		sourceColumn: EndDateKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column EndHourKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 24414ba4-9d9f-5265-8f1e-6118cedde4d7
+		sourceLineageTag: EndHourKey
+		summarizeBy: none
+		sourceColumn: EndHourKey
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column EmployeeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c6546eb1-0396-54f3-ab03-9c70eaa6d024
+		sourceLineageTag: EmployeeKey
+		summarizeBy: none
+		sourceColumn: EmployeeKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Overtime Hours'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 8cac7206-a99e-5b6d-8cd0-fe266ed94268
+		sourceLineageTag: OvertimeHours
+		summarizeBy: none
+		sourceColumn: OvertimeHours
+
+		changedProperty = IsHidden
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	partition Overtime = entity
+		mode: directLake
+		source
+			entityName: Overtime
+			schemaName: fact
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

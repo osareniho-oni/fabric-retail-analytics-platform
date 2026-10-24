@@ -1,0 +1,102 @@
+table Promotion
+	lineageTag: 04af3971-3814-51f0-8439-2221378190de
+	sourceLineageTag: [dim].[Promotion]
+
+	column PromotionKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c8a78864-6e83-5a20-a576-13ad62078ebd
+		sourceLineageTag: PromotionKey
+		summarizeBy: none
+		sourceColumn: PromotionKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PromotionID
+		dataType: int64
+		formatString: 0
+		lineageTag: 57f8d54a-0fa3-532b-b3d3-4937fc2d5223
+		sourceLineageTag: PromotionID
+		summarizeBy: none
+		sourceColumn: PromotionID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Promotion Name'
+		dataType: string
+		lineageTag: 295b0f32-6827-5e1e-b3db-b8b961f6eb67
+		sourceLineageTag: PromotionName
+		summarizeBy: none
+		sourceColumn: PromotionName
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Start Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ce4324a8-ff32-507d-99b8-c59ef6c799e8
+		sourceLineageTag: StartDate
+		summarizeBy: none
+		sourceColumn: StartDate
+
+		changedProperty = IsHidden
+
+		changedProperty = DataType
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'End Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e0a05aa2-1d64-5f2f-9827-96a2c25b2d40
+		sourceLineageTag: EndDate
+		summarizeBy: none
+		sourceColumn: EndDate
+
+		changedProperty = IsHidden
+
+		changedProperty = DataType
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Discount Percent'
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 2e9c609a-3888-5ca8-b488-db4e66c12c91
+		sourceLineageTag: DiscountPercent
+		summarizeBy: none
+		sourceColumn: DiscountPercent
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	partition Promotion = entity
+		mode: directLake
+		source
+			entityName: Promotion
+			schemaName: dim
+			expressionSource: 'DirectLake - dw_gold'
+
+	changedProperty = IsHidden
+

@@ -1,0 +1,259 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "InvokeCopyJob",
+        "typeProperties": {
+          "copyJobId": "193a4dbf-8729-5d78-8507-18f1d77b6804",
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+        },
+        "externalReferences": {
+          "connection": "87e36a7e-a731-58ff-82f0-987ccd0963c8"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Copy_SQL_Ref_Tables",
+        "dependsOn": []
+      },
+      {
+        "type": "InvokeCopyJob",
+        "typeProperties": {
+          "copyJobId": "49926b3f-5e50-5e39-9b92-471c27d7347a",
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+        },
+        "externalReferences": {
+          "connection": "87e36a7e-a731-58ff-82f0-987ccd0963c8"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Copy_SQL_Trans_Tables",
+        "description": "Transaction tables from SQL Server",
+        "dependsOn": []
+      },
+      {
+        "type": "InvokeCopyJob",
+        "typeProperties": {
+          "copyJobId": "7d75f2fe-7b56-502f-a464-a3d2f62f3155",
+          "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+        },
+        "externalReferences": {
+          "connection": "87e36a7e-a731-58ff-82f0-987ccd0963c8"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Copy_HR_CSV_Files",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('Filter_SQL_Trans_Copy_Job_Output').output.value\n",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Script",
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "text": {
+                      "value": "EXEC dbo.sp_WritePipelineAudit\n    @MasterRunId  = '@{pipeline().parameters.p_MasterRunId}',\n    @ChildRunId   = '@{pipeline().RunId}',\n    @Layer        = 'Bronze',\n    @SourceEntity = '@{item().properties.source.displayName}',\n    @TargetEntity = '@{item().properties.destination.displayName}',\n    @RowsRead     = @{coalesce(item().output.rowsRead, 'null')},\n    @RowsWritten  = @{coalesce(item().output.rowsCopied, 'null')},\n    @Status       = '@{item().status}';",
+                      "type": "Expression"
+                    },
+                    "type": "Query"
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              },
+              "linkedService": {
+                "name": "dw_gold",
+                "properties": {
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+                    "endpoint": "warehouse.example.invalid",
+                    "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+                  },
+                  "annotations": []
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Trans_Script",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "Trans_Tables_ForEach",
+        "dependsOn": [
+          {
+            "activity": "Filter_SQL_Trans_Copy_Job_Output",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('Copy_HR_CSV_Files').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Script",
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "text": {
+                      "value": "EXEC dbo.sp_WritePipelineAudit\n    @MasterRunId  = '@{pipeline().parameters.p_MasterRunId}',\n    @ChildRunId   = '@{pipeline().RunId}',\n    @Layer        = 'Bronze',\n    @SourceEntity = '@{item().properties.source.displayName}',\n    @TargetEntity = '@{item().properties.destination.displayName}',\n    @RowsRead     = @{coalesce(item().output.rowsRead, 'null')},\n    @RowsWritten  = @{coalesce(item().output.rowsCopied, 'null')},\n    @Status       = '@{item().status}';",
+                      "type": "Expression"
+                    },
+                    "type": "Query"
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              },
+              "linkedService": {
+                "name": "dw_gold",
+                "properties": {
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+                    "endpoint": "warehouse.example.invalid",
+                    "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+                  },
+                  "annotations": []
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "HR_Script",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "HR_Files_ForEach",
+        "dependsOn": [
+          {
+            "activity": "Copy_HR_CSV_Files",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('Copy_SQL_Ref_Tables').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Script",
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "text": {
+                      "value": "EXEC dbo.sp_WritePipelineAudit\n    @MasterRunId  = '@{pipeline().parameters.p_MasterRunId}',\n    @ChildRunId   = '@{pipeline().RunId}',\n    @Layer        = 'Bronze',\n    @SourceEntity = '@{item().properties.source.displayName}',\n    @TargetEntity = '@{item().properties.destination.displayName}',\n    @RowsRead     = @{coalesce(item().output.rowsRead, 'null')},\n    @RowsWritten  = @{coalesce(item().output.rowsCopied, 'null')},\n    @Status       = '@{item().status}';",
+                      "type": "Expression"
+                    },
+                    "type": "Query"
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              },
+              "linkedService": {
+                "name": "dw_gold",
+                "properties": {
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "artifactId": "e22ef781-1468-52f8-ba0b-3d654c01338d",
+                    "endpoint": "warehouse.example.invalid",
+                    "workspaceId": "70935459-8530-5678-8012-910eb0b513f6"
+                  },
+                  "annotations": []
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Ref_Script",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "Ref_Tables_ForEach",
+        "dependsOn": [
+          {
+            "activity": "Copy_SQL_Ref_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Filter",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('Copy_SQL_Trans_Tables').output.value",
+            "type": "Expression"
+          },
+          "condition": {
+            "value": "@equals(item().jobStage, 'Copy')",
+            "type": "Expression"
+          }
+        },
+        "name": "Filter_SQL_Trans_Copy_Job_Output",
+        "dependsOn": [
+          {
+            "activity": "Copy_SQL_Trans_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "p_MasterRunId": {
+        "type": "string"
+      }
+    }
+  }
+}

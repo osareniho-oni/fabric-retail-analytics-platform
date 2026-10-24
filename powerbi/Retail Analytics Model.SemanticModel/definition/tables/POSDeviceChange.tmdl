@@ -1,0 +1,80 @@
+table POSDeviceChange
+	lineageTag: b9694d9b-f358-567a-a2c3-2eeb189f01a4
+	sourceLineageTag: [fact].[POSDeviceChange]
+
+	column POSDeviceChangeKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e31443f0-d9da-5431-88c4-d249dd9a7c4d
+		sourceLineageTag: POSDeviceChangeKey
+		summarizeBy: count
+		sourceColumn: POSDeviceChangeKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 3d09d891-4691-5c37-b0f8-dcad278bb4c9
+		sourceLineageTag: DateKey
+		summarizeBy: count
+		sourceColumn: DateKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChannelKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 45ae4153-d0b9-5f11-9019-4342a5e5dee2
+		sourceLineageTag: ChannelKey
+		summarizeBy: count
+		sourceColumn: ChannelKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChangeType
+		dataType: string
+		lineageTag: 0f515e8f-be83-5f04-a89a-1012798fff52
+		sourceLineageTag: ChangeType
+		summarizeBy: none
+		sourceColumn: ChangeType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OldSerialNumber
+		dataType: string
+		lineageTag: 235bcf96-9b9d-596b-8096-f32adfae26c6
+		sourceLineageTag: OldSerialNumber
+		summarizeBy: none
+		sourceColumn: OldSerialNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column NewSerialNumber
+		dataType: string
+		lineageTag: a5521b89-9138-59a1-9087-2d58eba5dc39
+		sourceLineageTag: NewSerialNumber
+		summarizeBy: none
+		sourceColumn: NewSerialNumber
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition POSDeviceChange = entity
+		mode: directLake
+		source
+			entityName: POSDeviceChange
+			schemaName: fact
+			expressionSource: 'DirectLake - dw_gold'
+
