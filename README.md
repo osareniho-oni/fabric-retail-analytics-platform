@@ -1,82 +1,153 @@
-# Retail Operations Analytics with Microsoft Fabric
+# Retail Analytics Platform
 
-A retail analytics platform integrating operational data into Bronze and Silver lakehouses, a Gold dimensional Warehouse, and Power BI reporting.
+### SQL Server + Microsoft Fabric | Data Engineering, Dimensional Modelling & Business Intelligence
 
-I independently designed and implemented the Fabric solution from a business case introduced during structured data warehousing and BI training.
+I designed and built an end-to-end analytics platform that transforms retail sales, purchasing, product, and workforce data into an orchestrated Microsoft Fabric solution, a dimensional data warehouse, and Power BI analysis.
 
-## Business questions and analysis contribution
+This project demonstrates how I turn analytical questions into data pipelines, transformation rules, warehouse structures, KPIs, and reports—and how I make the implementation observable and reviewable.
 
-- What sells each day, and how does promotional sales mix differ?
-- Which products appear together, and which vendors deliver sooner?
-- How do demand, workforce activity, and revenue/cost patterns vary over time?
+---
 
-I translated supplied requirements into transformation rules, fact/dimension models, KPI definitions, and report designs. The [requirements trace](documentation/requirements-traceability.md) connects those decisions to implementation; the [KPI glossary](documentation/dashboard-design.md) records grains, assumptions, and open questions.
+## Project at a glance
 
-## Architecture
+| | |
+|---|---|
+| **Business domain** | Retail sales, promotions, procurement, and workforce operations |
+| **Source systems** | SQL Server operational data and HR CSV files |
+| **Data platform** | Microsoft Fabric Data Pipelines, Copy Jobs, Lakehouses, Spark, and Warehouse |
+| **Analytics** | Dimensional semantic model, DAX measures, and Power BI report pages |
+| **My role** | Solution design and implementation across ingestion, transformation, warehouse, semantic model, and reporting |
+
+## Business questions the platform supports
+
+- How do sales and product demand change by date, store, promotion, and time of day?
+- Which products are purchased together, and how do promotion and product changes relate to sales?
+- How do purchasing volumes and delivery times vary by product, vendor, and store?
+- What patterns appear in absence, overtime, and misconduct records?
+- How can sales and purchasing measures be compared across reporting periods?
+
+I translated these analytical needs into source-to-report paths, event-retention rules, fact grains, dimensions, KPI calculations, report topics, and validation questions. The [requirements trace](documentation/business-requirements.md) links the questions to the implementation and identifies areas requiring further validation.
+
+## Solution architecture
 
 ```mermaid
-flowchart TD
-    SQL[On-premises SQL Server] --> TC[Transaction ingestion]
-    SQL --> RC[Reference ingestion]
-    HR[HR CSV files] --> FC[HR CSV ingestion]
-    TC --> BT[Bronze Lakehouse Tables]
-    RC --> BT
-    FC --> BF[Bronze Lakehouse Files]
-    BT --> TN[Table staging notebook]
-    BF --> FN[HR staging notebook]
-    TN --> S[Silver staging tables]
-    FN --> S
-    S --> SP[T-SQL warehouse loading]
-    SP --> W[Gold Warehouse dimensions and facts]
-    D[Calendar dataflow] --> W
-    W --> M[Semantic model and DAX]
-    M --> P[Power BI reports]
+flowchart LR
+    SQL[SQL Server operational data] --> TC[Transaction Copy Job]
+    SQL --> RC[Reference Copy Job]
+    HR[HR CSV files] --> HC[HR Copy Job]
+    TC --> BL[Bronze Lakehouse]
+    RC --> BL
+    HC --> BL
+    BL --> TB[Table staging notebook]
+    BL --> FB[HR file staging notebook]
+    TB --> SL[Silver Lakehouse]
+    FB --> SL
+    SL --> WH[Gold dimensional Warehouse]
+    CAL[Calendar dataflow] --> WH
+    WH --> SM[Direct Lake semantic model]
+    SM --> BI[Power BI reports]
 ```
 
-A master pipeline invokes Bronze, Silver, then Gold through completion dependencies. [Architecture details and editable sources](architecture/README.md) explain the flow.
+The master pipeline sequences **Bronze → Silver → Gold**. Separate table and file transformation paths converge in Silver; Warehouse procedures then load dimensions and facts for shared semantic-model and report consumption.
 
-## Engineering highlights
+## Engineering decisions and implementation
 
-- **Different ingestion strategies:** [transaction copies](pipelines/Ingest_Transaction_Tables.CopyJob/copyjob-content.json) configure snapshot-plus-incremental reads; [references](pipelines/Ingest_Reference_Tables.CopyJob/copyjob-content.json) overwrite. [Ingestion details](documentation/data-engineering.md) distinguish these from HR file handling and Gold watermarks.
-- **Two transformation paths:** [table](notebooks/Tables_Staging_Notebook.Notebook/notebook-content.py) and [HR file](notebooks/Files_Staging_Notebook.Notebook/notebook-content.py) notebooks converge into Silver staging.
-- **Dimensional loading:** the [Sales procedure](sql/dbo/StoredProcedures/sp_LoadFactSales.sql) illustrates grain/key checks, dimension resolution, and business-date watermarks.
-- **Orchestration and monitoring:** [master dependencies](pipelines/Master_ETL_Pipeline.DataPipeline/pipeline-content.json), notebook/job outputs, and [audit writing](sql/dbo/StoredProcedures/sp_WritePipelineAudit.sql) connect the layers.
+### 1. Separate ingestion by source behavior
 
-| Technology | Role |
+Transaction, reference, and HR file sources use distinct Fabric Copy Jobs rather than a single generic load. The transaction configuration uses snapshot-plus-incremental ingestion settings; reference tables use overwrite destinations; HR files land in the Bronze Files area.
+
+- [Master orchestration](pipelines/Master_ETL_Pipeline.DataPipeline/pipeline-content.json)
+- [Transaction ingestion](pipelines/Ingest_Transaction_Tables.CopyJob/copyjob-content.json)
+- [Reference ingestion](pipelines/Ingest_Reference_Tables.CopyJob/copyjob-content.json)
+- [HR file ingestion](pipelines/Ingest_HR_CSV_Files.CopyJob/copyjob-content.json)
+
+### 2. Build distinct, fit-for-purpose staging paths
+
+The table notebook standardizes and shapes SQL-ingested entities. The HR notebook applies schemas and date handling, prepares workforce records, and writes staged outputs. Keeping these paths distinct makes source-specific rules visible while bringing both into the Silver layer.
+
+- [Table staging notebook](notebooks/Tables_Staging_Notebook.Notebook/notebook-content.py)
+- [HR file staging notebook](notebooks/Files_Staging_Notebook.Notebook/notebook-content.py)
+
+### 3. Model for analysis and history
+
+The Gold Warehouse uses dimensions and subject-area facts to support reusable analysis across sales, purchasing, and workforce topics. Product, vendor, and employee loaders implement Type 2 dimension history; the Sales fact loader uses business-date control for incremental processing.
+
+- [Sales fact loader](sql/dbo/StoredProcedures/sp_LoadFactSales.sql)
+- [Product history loader](sql/dbo/StoredProcedures/sp_LoadDimProduct_SCD2.sql)
+- [Vendor history loader](sql/dbo/StoredProcedures/sp_LoadDimVendor_SCD2.sql)
+- [Employee history loader](sql/dbo/StoredProcedures/sp_LoadDimEmployee_SCD2.sql)
+- [Warehouse model and grains](documentation/data-model.md)
+
+### 4. Make pipeline activity observable
+
+Pipeline dependencies order the layer runs and Warehouse prerequisites. Load-control state supports incremental fact windows; audit procedures capture entity-level status and counts for execution review.
+
+- [Pipeline audit procedure](sql/dbo/StoredProcedures/sp_WritePipelineAudit.sql)
+- [Execution log screenshot](screenshots/execution/pipeline-execution-log.png)
+- [Load-watermark screenshot](screenshots/validation/fact-load-watermarks.png)
+
+### 5. Deliver shared analytics, not isolated extracts
+
+The semantic model brings Warehouse entities into a shared Direct Lake model. DAX measures and time calculations support sales, promotion, vendor, workforce, and period analysis. KPI definitions document grain, filter behavior, assumptions, and interpretation.
+
+- [Semantic model](<powerbi/Retail Analytics Model.SemanticModel/definition/model.tmdl>)
+- [DAX measures](<powerbi/Retail Analytics Model.SemanticModel/definition/tables/_Measures.tmdl>)
+- [Relationships](<powerbi/Retail Analytics Model.SemanticModel/definition/relationships.tmdl>)
+- [KPI glossary and report design](documentation/dashboard-design.md)
+
+## Evidence from my Fabric implementation
+
+The following captures are from my Fabric project run and show the pipeline execution, semantic-model structure, and report design.
+
+### Orchestration and model
+
+| Successful master pipeline | Sales model relationships |
 |---|---|
-| SQL Server / FileServer | Operational tables and HR CSV sources |
-| Fabric Copy Jobs / pipelines | Ingestion and orchestration |
-| Lakehouses / PySpark / Spark SQL | Landing and conformance |
-| Warehouse / T-SQL | Dimensions, facts, and load controls |
-| Power Query | Calendar generation |
-| Direct Lake / DAX / Power BI | Semantic model and analytics |
+| ![Successful Fabric master pipeline run](screenshots/execution/master-pipeline-success.png) | ![Sales subject-area relationships in the semantic model](screenshots/models/sales-relationships.png) |
 
-## Execution evidence
+### Power BI report design
 
-![Existing Fabric master pipeline with successful Bronze, Silver, and Gold invocations](screenshots/execution/master-pipeline-success.png)
+![Revenue and profitability report design](screenshots/dashboards/revenue-profitability.png)
 
-Existing run, October 24, 2026: all three invoked pipelines succeeded. Run identifier redacted. [Evidence boundaries and logs](documentation/validation.md) distinguish execution from correctness.
+Additional evidence includes [Bronze, Silver, and Gold pipeline configurations](screenshots/pipelines/bronze-ingestion.png), [Warehouse fact and dimension objects](screenshots/models/warehouse-facts.png), and [marginal cost and revenue analysis](screenshots/dashboards/marginal-cost-revenue.png).
 
-## Sales relationship layout
+## Business analysis and engineering skills demonstrated
 
-![Sales subject-area relationships in the shared semantic model](screenshots/models/sales-relationships.png)
-
-Sales is one subject-area layout within the shared model. [Model documentation](documentation/data-model.md) explains all five layouts, exact relationship columns, and date/time roles.
-
-## Explore
-
-| Area | Evidence |
+| Skill | How it appears in the project |
 |---|---|
-| [Business requirements](documentation/business-requirements.md) | Context, scope, and supplied analytical needs |
-| [Architecture](architecture/README.md) | Flow and editable diagrams |
-| [Notebooks](notebooks/README.md) / [pipelines](pipelines/README.md) | Transformations and dependencies |
-| [SQL](sql/README.md) / [data model](documentation/data-model.md) | Dimensions, facts, and selected loaders |
-| [Power BI](powerbi/README.md) / [dashboard design](documentation/dashboard-design.md) | Model, measures, qualified report images |
-| [Validation](documentation/validation.md) / [setup](documentation/setup.md) | Checks and reproduction limits |
-| [Screenshots](screenshots/README.md) / [sample data](data/sample-data/README.md) | Reviewed captures and fictional examples |
+| Requirements analysis | Break analytical questions into implementable data and reporting needs; maintain a requirements-to-evidence trace. |
+| Data definition | Specify event-retention rules, fact grains, dimension roles, KPI formulas, and validation questions. |
+| Data pipeline engineering | Design source-specific ingestion, medallion-layer orchestration, separate transformation paths, and activity logging. |
+| Warehouse development | Build dimensional structures and T-SQL loading patterns for incremental facts and Type 2 dimensions. |
+| BI semantic modelling | Relate shared dimensions to subject-area facts and define DAX measures and time calculations. |
+| Analytical communication | Document what KPIs mean, what assumptions they make, and where comparisons are descriptive rather than causal. |
 
-## Validation and limitations
+## Validation and known engineering considerations
 
-Screenshots support existing-project execution; local examples check fictional calculations and reproduce known limitations. Detailed correctness reconciliations and exact source/deployment correspondence remain pending.
+I ran five local reference-check groups with Python's standard library:
 
-Historical attribution, late arrivals, HR ordering, basket keys, and financial/KPI assumptions need review. Distance-based vendor analysis is missing; descriptive comparisons are not causal. This sanitized code showcase requires environment configuration and is not an import-ready deployment. [Validation details](documentation/validation.md) retain the unresolved issues.
+```bash
+python documentation/validation/run_examples.py
+```
+
+They cover example sales arithmetic, HR retention-rule examples, rerun behavior, delivery-rate grain, and historical/late-arrival counterexamples. These are offline checks—not execution of the Fabric Spark notebooks, Warehouse SQL, or DAX. The screenshots document successful Fabric execution; numerical reconciliation and exact source-to-deployed-version matching are separate validation tasks.
+
+The implementation also surfaces meaningful engineering considerations: event-time attribution for historical dimensions, late-arriving data and restatement, deterministic HR event ordering, KPI grain, and financial-cost assumptions. These are documented with evidence and next checks in [validation](documentation/validation.md), rather than presented as solved when they are not.
+
+## Repository guide
+
+| Path | Contents |
+|---|---|
+| `pipelines/` | Master and layer pipelines, Copy Jobs, and calendar dataflow |
+| `notebooks/` | PySpark and Spark SQL staging notebooks |
+| `sql/` | Warehouse dimensions, facts, load procedures, and audit logic |
+| `powerbi/` | Semantic-model definitions and report excerpts |
+| `screenshots/` | Fabric execution, model, pipeline, and report evidence |
+| `documentation/` | Requirements traceability, data model, engineering decisions, KPIs, setup, and validation |
+| `data/sample-data/` | Small fictional fixtures for local reference checks |
+
+The repository is a curated implementation showcase and requires environment-specific Fabric bindings; it is not a one-click deployment package. Review the [setup notes](documentation/setup.md) before attempting to reproduce the solution.
+
+---
+
+**Technology:** Microsoft SQL Server · Microsoft Fabric · Data Pipelines · Copy Jobs · Lakehouse · PySpark · Spark SQL · Fabric Warehouse · T-SQL · Power Query · Power BI · DAX · Direct Lake

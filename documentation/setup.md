@@ -1,30 +1,38 @@
-# Setup and reproduction boundaries
+# Configuration and offline examples
 
-[Overview](../README.md) | [Architecture](../architecture/README.md) | [Validation](validation.md)
+[Portfolio overview](../README.md) | [Architecture diagram](../architecture/overview.mmd) | [Validation](validation.md)
 
-## Review the portfolio
+## Repository use
 
-No deployment is required. Start with the root README, then inspect the business trace, diagrams, source examples, and evidence. The selected implementation preserves existing behavior with confidentiality substitutions.
+The repository provides sanitized implementation examples, diagrams, screenshots, and fictional checks. Live connection handles, workspace/item IDs, and storage endpoints are replaced with placeholders. Environment configuration and a complete deployment package are required before cloud execution.
 
-This is **not an import-ready deployment**. Workspace/item IDs, connection handles, and storage endpoints are placeholders. Original credentials, source data, full provisioning/setup, and a complete set of pipeline dependencies are not supplied. Do not execute these examples against an existing environment as though the bindings were valid.
+## Environment prerequisites
 
-## Offline examples
+| Dependency | Configuration needed |
+|---|---|
+| Fabric workspace and capacity | Permissions to create/run lakehouses, Warehouse, jobs, notebooks, dataflow, model, and reports |
+| SQL Server / FileServer | Source access and Fabric connections; gateway connectivity where required for on-premises sources |
+| Lakehouses and Warehouse | Correct item bindings and SQL endpoint access; code uses lh_bronze, lh_silver, and dw_gold names |
+| Pipeline targets | Deployed Copy Jobs, notebooks, dataflow, procedures, connections, and workspace/item IDs |
+| Semantic model/report | Demo or approved storage bindings, table access, model relationships, and report connection |
 
-Python 3.9+ is sufficient, with no third-party packages or network access:
+Actual gateway/security configuration and capacity costs are outside the retained examples. No infrastructure-as-code or automated deployment is supplied.
+
+## Included artifact scope
+
+- **Semantic model:** native descriptor, compatibility/model files, all 27 referenced tables/helpers, shared expression, and relationships.
+- **Pipelines/Copy Jobs:** content definitions with their activity graph and mappings; notebook exports retain readable source and dependency comments.
+- **Warehouse:** schema/table definitions and eight selected loading/audit procedures. Other Gold-invoked procedures and a complete migration are not included.
+- **Report excerpts:** two page configurations ([revenue/profitability](../powerbi/report-excerpts/revenue-profitability-page.json) and [marginal analysis](../powerbi/report-excerpts/marginal-cost-revenue-page.json)) and a model reference. Complete visuals/theme packaging is not included; screenshots demonstrate rendered design.
+
+The code is intended for inspection and adaptation, not direct import. No original source data or credentials are included.
+
+## Run the offline examples
+
+Python 3.9+ and its standard library are sufficient:
 
 ```text
 python documentation/validation/run_examples.py
 ```
 
-The runner checks fictional arithmetic, a reference rerun/duplicate contract, and known-limitation examples. It writes no output files. It does not execute Spark, T-SQL, DAX, or Fabric. [Sample data](../data/sample-data/README.md) supports individual examples, not a validated full pipeline run.
-
-## Retained native structure and illustrative excerpts
-
-- The semantic-model folder retains its descriptor, compatibility/model definitions, all referenced tables/helpers, relationship definitions, and shared storage expression. The expression is sanitized; structure is useful for technical review, not proof of deployability.
-- Pipeline/Copy Job folders retain their content definitions. Notebook folders retain readable Fabric source with kernel/dependency comments. Their original environment handles are substituted; external services and some invoked objects are absent.
-- SQL preserves canonical table/schema definitions and eight selected procedures. dbo.Date is calendar staging, FactLoadControl is load state, and PipelineExecutionLog supports auditing. Other procedures invoked by Gold are deliberately omitted from this selected example set; this is not a complete migration or setup package.
-- Report files under [report-excerpts](../powerbi/report-excerpts/README.md) are explicitly illustrative page settings and a model reference. No visual definitions, theme/resource package, report entry configuration, or complete report is implied.
-
-No .platform files, schedules, SQL project descriptor, original data, or notebook output containers are included. None is required to read the selected excerpts. Missing workspace-integration metadata is not silently presented as a working native deployment.
-
-Live operation depends on suitable Fabric capacity, permissions, SQL Server/FileServer connections, any required gateway, and deployed items. These configurations and costs have not been reproduced; infrastructure-as-code and CI/CD are not claimed. Existing screenshots support execution and design with the limits in [validation](validation.md).
+The fixtures in [data/sample-data](../data/sample-data/fixtures.json) exercise individual calculations and counterexamples. The runner uses in-memory SQLite and writes no files. See [validation](validation.md) for results and pending Fabric checks.

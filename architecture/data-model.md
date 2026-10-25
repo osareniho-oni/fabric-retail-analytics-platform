@@ -1,6 +1,6 @@
 # Selected star relationships
 
-[Architecture](README.md) | [Model documentation](../documentation/data-model.md) | [Editable Mermaid source](data-model.mmd)
+[Portfolio overview](../README.md) | [Model documentation](../documentation/data-model.md) | [Editable Mermaid source](data-model.mmd)
 
 ```mermaid
 flowchart LR
@@ -19,4 +19,4 @@ flowchart LR
     Vendor[Vendor] --> Purchase
 ```
 
-This is a selected source-defined model view, not an inspected deployed-model screenshot. See the model documentation for omitted relationships, date roles, and historical attribution limits.
+Selected Sales/Purchase star relationships. The [model documentation](../documentation/data-model.md) covers all five subject areas, date roles, and historical attribution.

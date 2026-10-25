@@ -1,0 +1,25 @@
+# Local/private material
+/portfolio-review-archive/
+/private-archive/
+/.private/
+/data/raw/
+/screenshots/intake/
+.env
+.env.*
+!.env.example
+*.log
+
+# Canonical notebook examples are exported Python sources; keep raw downloads out.
+*.ipynb
+.ipynb_checkpoints/
+
+# Editor, cache and build output
+.vscode/
+.idea/
+__pycache__/
+*.py[cod]
+node_modules/
+bin/
+obj/
+.DS_Store
+Thumbs.db
