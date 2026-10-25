@@ -1,43 +1,35 @@
-# Data engineering examples
+# Data engineering
 
-[Overview](../README.md) | [Model/loaders](data-model.md) | [Validation](validation.md)
+[Portfolio overview](../README.md) | [Architecture diagram](../architecture/overview.mmd) | [Data model](data-model.md) | [Validation](validation.md)
 
-**Version status:** every artifact here is a sanitized copy of the existing implementation. No proposed behavioral corrections were applied. Invalid environment bindings are deliberate confidentiality placeholders. These are code-review examples, not a complete runnable package.
+## Ingestion choices
 
-## Ingestion and orchestration
-
-| Evidence | Purpose | Limitation |
+| Source | Inspected configuration | Landing area |
 |---|---|---|
-| [Master pipeline](../pipelines/Master_ETL_Pipeline.DataPipeline/pipeline-content.json) | Invokes Bronze, Silver, then Gold with completion dependencies. | Supplied master image shows three successful invocations; exact source version remains unverified. |
-| [Bronze pipeline](<../pipelines/Bronze(Ingestion)_Pipeline.DataPipeline/pipeline-content.json>) | Invokes reference, transaction, and HR Copy Jobs; processes outputs for auditing. | External connections and Copy Job output behavior need Fabric evidence. |
-| [Reference Copy Job](../pipelines/Ingest_Reference_Tables.CopyJob/copyjob-content.json) | Batch overwrite of SQL Server reference tables. | Source availability and full-copy consistency unverified. |
-| [Transaction Copy Job](../pipelines/Ingest_Transaction_Tables.CopyJob/copyjob-content.json) | CDC-mode/snapshot-plus-incremental configuration with transaction-ID settings and append targets. | Does not prove source-side CDC or complete update/delete propagation. |
-| [HR Copy Job](../pipelines/Ingest_HR_CSV_Files.CopyJob/copyjob-content.json) | Six FileServer CSV inputs to Bronze files, with ingestion timestamps. | Source schema/order and connector execution unverified. |
-| [Silver pipeline](<../pipelines/Silver(Staging)_Pipeline.DataPipeline/pipeline-content.json>) | Table/file notebooks and success/failure audit branches. | Logging branches alone do not prove correct parent failure status. |
-| [Gold pipeline](<../pipelines/Gold(Modeling)_Pipeline.DataPipeline/pipeline-content.json>) | Dimension-before-fact loading and calendar preparation. | Original calendar initialization and POS sequencing concerns are retained. |
+| [Sales and purchase transactions](../pipelines/Ingest_Transaction_Tables.CopyJob/copyjob-content.json) | CDC job mode, SnapshotPlusIncremental reads, TransactionID change settings, initial Truncate behavior, and Append destinations | Bronze Tables |
+| [Reference tables](../pipelines/Ingest_Reference_Tables.CopyJob/copyjob-content.json) | Batch ingestion with Overwrite destinations | Bronze Tables |
+| [Six HR CSVs](../pipelines/Ingest_HR_CSV_Files.CopyJob/copyjob-content.json) | Batch FileServer copies with named files, FlattenHierarchy, and ingestion timestamps | Bronze Files |
 
-## Transformation and business rules
+Transaction settings support snapshot-plus-incremental ingestion; they do not expose a persisted source checkpoint or establish source-side log-based SQL CDC. This is distinct from Gold's explicit LastCompletedBusinessDate control.
 
-- [Table notebook](../notebooks/Tables_Staging_Notebook.Notebook/notebook-content.py): Spark SQL renaming, type conversions, reference ranking, date/hour extraction, and Silver table replacement. Sales/Purchase staging does not silently resolve conflicting transaction IDs; fact loaders contain fail-fast checks.
-- [File notebook](../notebooks/Files_Staging_Notebook.Notebook/notebook-content.py): explicit schemas, date parsing, prior-day filtering, first daily absence and last daily misconduct retention, overtime event deduplication, Delta writes, and JSON audit payloads.
-- [Calendar Power Query](../pipelines/dataflows/Date_Dataflow.Dataflow/mashup.pq): generated date attributes and Warehouse staging binding.
+The implementation narrative describes refreshed/replaced HR files. The export records batch file copies without an explicit overwrite flag; repeat-copy semantics remain a configuration check. Reference table replacement is explicit in the Overwrite setting.
 
-The original HR notebook infers row order through distributed zipWithIndex. That does not establish a deterministic source-sequence contract. This limitation remains in the retained source and has not been resolved by the offline reference examples.
+## Transformation paths
 
-## Incremental loading and observability
+- [Table notebook](../notebooks/Tables_Staging_Notebook.Notebook/notebook-content.py): Spark SQL renaming, type conversion, selected reference ranking, date/hour extraction, and Silver table replacement.
+- [HR notebook](../notebooks/Files_Staging_Notebook.Notebook/notebook-content.py): explicit schemas, date parsing, prior-day filtering, first daily absence / last daily misconduct retention, overtime deduplication, Delta writes, and audit payloads.
+- [Calendar query](../pipelines/dataflows/Date_Dataflow.Dataflow/mashup.pq): dates from 2014 through the current year with reporting attributes.
 
-The [Sales loader](../sql/dbo/StoredProcedures/sp_LoadFactSales.sql) uses completed business dates, checks null/duplicate transaction IDs, resolves dimensions, compares source/join counts, prevents existing-ID inserts, and audits success/failure. The [audit procedure](../sql/dbo/StoredProcedures/sp_WritePipelineAudit.sql) stores correlated run IDs and counts.
+Both transformation paths converge into Silver. HR first/last selection relies on inferred distributed input order; a stable source sequence is an improvement identified in [validation](validation.md).
 
-These controls demonstrate implementation intent. They do not establish late-arrival support, atomic recovery, concurrency safety, monitoring alerts, or numerical reconciliation. Late-arriving old-dated events can fall outside subsequent watermark windows. See the [validation ledger](validation.md).
+## Warehouse loading
 
-## Supplied visual evidence
+The [Sales loader](../sql/dbo/StoredProcedures/sp_LoadFactSales.sql) calculates a business-date window from FactLoadControl, rejects null/duplicate source IDs, resolves dimension keys, checks joined counts, inserts absent transaction IDs, advances the watermark, and records status. [Purchase](../sql/dbo/StoredProcedures/sp_LoadFactPurchase.sql) and [Overtime](../sql/dbo/StoredProcedures/sp_LoadFactOvertime.sql) illustrate related patterns.
 
-Reviewed crops show [Bronze](../screenshots/pipelines/bronze-ingestion.png), [Silver](../screenshots/pipelines/silver-staging.png), [Gold](../screenshots/pipelines/gold-modeling.png), [Bronze Tables/Files](../screenshots/storage/bronze-tables-and-files.png), and [Silver staging tables](../screenshots/storage/silver-staging-tables.png). These support configured paths/inventories; the ingestion distinctions below explains source incrementality versus explicit Gold fact watermarks and the limits of file replacement evidence.
+Incremental date windows avoid reloading completed periods. Their tradeoff is that old-dated late arrivals and corrections need a replay/restatement policy; current code does not provide one.
 
-## Ingestion distinctions and external configuration
+## Dependencies and monitoring
 
-Transaction Copy Job settings specify CDC mode, SnapshotPlusIncremental, TransactionID change settings, an initial Truncate behavior, and append destinations. They do not expose a persisted source watermark or prove source-side log-based SQL CDC. This is distinct from Gold FactLoadControl's explicit LastCompletedBusinessDate watermark.
+[Master](../pipelines/Master_ETL_Pipeline.DataPipeline/pipeline-content.json), [Bronze](<../pipelines/Bronze(Ingestion)_Pipeline.DataPipeline/pipeline-content.json>), [Silver](<../pipelines/Silver(Staging)_Pipeline.DataPipeline/pipeline-content.json>), and [Gold](<../pipelines/Gold(Modeling)_Pipeline.DataPipeline/pipeline-content.json>) definitions show completion dependencies, parallel staging, dimension-before-fact sequencing, and logging branches.
 
-Reference destinations use batch Overwrite. HR destinations are named CSV files copied from FileServer into Bronze Files with FlattenHierarchy. File replacement is author-described; exported settings alone do not establish repeat-copy overwrite behavior. Do not describe CSV handling as SQL table truncation.
-
-The author identifies on-premises SQL Server as the source. Connection types are visible, but gateway installation/configuration, credentials, permissions, and runtime checkpoints were not inspected. Matching downloaded notebook sources corroborated the retained text; no embedded notebook outputs are published.
+Copy Job outputs, notebook row-count payloads, and [procedure audit calls](../sql/dbo/StoredProcedures/sp_WritePipelineAudit.sql) feed PipelineExecutionLog. The [master-run capture](../screenshots/execution/master-pipeline-success.png) and [log preview](../screenshots/execution/pipeline-execution-log.png) provide execution context. Failure propagation, overlapping runs, and partial-write recovery remain acceptance checks.

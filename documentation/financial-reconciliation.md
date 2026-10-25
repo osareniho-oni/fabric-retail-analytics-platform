@@ -1,8 +1,8 @@
-# Financial report review: design evidence, reconciliation pending
+# Financial calculation bases and reconciliation
 
 [Dashboard design](dashboard-design.md) | [DAX source](<../powerbi/Retail Analytics Model.SemanticModel/definition/tables/_Measures.tmdl>) | [Read-only DAX checks](validation/financial-reconciliation.dax) | [Read-only Warehouse checks](validation/financial-reconciliation.sql)
 
-The supplied 2019 profitability view displays approximately Net Revenue $381.23M, Gross Profit $374.86M, Gross Profit Margin 98.33%, and Production Cost $5.56B. These are displayed report values, **not validated financial outcomes**. The bridge displays about $6.36M COGS. The page's selected visual definitions reference the inspected measures; exact correspondence with the live model remains unconfirmed.
+The supplied 2019 profitability view displays approximately Net Revenue $381.23M, Gross Profit $374.86M, Gross Profit Margin 98.33%, and Production Cost $5.56B. These are displayed report values, **not validated financial outcomes**. The bridge displays about $6.36M COGS. The retained DAX supplies the following calculation bases.
 
 ## Different calculation bases
 
@@ -23,7 +23,7 @@ Other unresolved questions: shared versus mismatched date roles, opening/closing
 
 ## Precise checks to perform in the existing project
 
-The linked SQL and DAX queries are newly authored **read-only proposals and have not been executed**. They do not change any measure, loader, or model. Confirm object names/source version and run only through your approved existing-project access.
+The linked SQL and DAX queries are **read-only checks that have not been executed**. Confirm the deployed object names and page context before comparing results.
 
 1. Record the page's 2019 filter, Top N value, other slicers, visual filters, calculation-group selections, and exact card measures. Export underlying approved totals privately with full precision; do not reconcile rounded cards alone.
 2. Run the DAX base query with calculation-group filters cleared. Compare revenue, purchase spend/units, annual purchase-order-date spend, COGS, implied COGS, and profit/margin. Differences from the screenshot can indicate context/version differences, not necessarily a failed calculation.
@@ -32,4 +32,4 @@ The linked SQL and DAX queries are newly authored **read-only proposals and have
 5. For a small approved product/time subset, hand-calculate sales net amount, purchase spend and units, a clearly specified unit-cost basis, sold cost, and margin. Explain inventory/timing differences before interpreting high margins as performance.
 6. For marginal metrics, compare January/February/March and December/January explicitly: previous selected period, numeric chronological period, delta revenue/spend, delta quantities, zero/missing denominators, and total-row behavior. Confirm unit comparability before interpreting the spread.
 
-No measure is changed in this phase. The two dashboard images are report-design evidence only, with qualifications next to their links/images. Use the successful master-run capture as the README's lead image now; request Daily Sales Movement with reconciled sales/discount/order totals as a better-supported lead analytical page later.
+Reconciliation remains open. The report images demonstrate visual design; financial performance interpretation depends on resolving these cost, quantity, and date bases.
